@@ -1,12 +1,7 @@
-import Usuarios from "./pages/Usuarios";
+import AppRoutes from "./routes/AppRoutes";
 
 function App() {
-  return (
-    <div>
-      <h1>ProjectGO</h1>
-      <Usuarios />
-    </div>
-  );
+  return <AppRoutes />;
 }
 
 export default App;

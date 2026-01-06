@@ -1,0 +1,159 @@
+/* ================================
+   CONTAINER PRINCIPAL
+================================ */
+.login-container {
+  display: flex;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  background-color: #111;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* ================================
+   LADO ESQUERDO – IMAGEM
+================================ */
+.login-left {
+  flex: 1;
+  background-image: url("../../assets/login.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* ================================
+   LADO DIREITO – FUNDO ESCURO
+================================ */
+.login-right {
+  flex: 1;
+  background: radial-gradient(circle at top, #2a2a2a 0%, #141414 60%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* ================================
+   CARD DO LOGIN
+================================ */
+.login-box {
+  width: 380px;
+  padding: 28px 30px 32px;
+  background: rgba(35, 35, 35, 0.95);
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.8);
+}
+
+/* ================================
+   LOGO
+================================ */
+.login-logo {
+  display: block;
+  width: 90px;
+  margin: 0 auto 16px;
+}
+
+/* ================================
+   TÍTULO
+================================ */
+.login-box h2 {
+  color: #ffffff;
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+/* ================================
+   DESCRIÇÃO
+================================ */
+.login-box p {
+  color: #bdbdbd;
+  font-size: 13px;
+  margin-bottom: 22px;
+}
+
+/* ================================
+   INPUT WRAPPER (ÍCONES)
+================================ */
+.login-input {
+  position: relative;
+  margin-bottom: 14px;
+}
+
+.login-input input {
+  width: 100%;
+  height: 44px;
+  padding: 10px 12px 10px 40px;
+  border-radius: 4px;
+  border: 1px solid #444;
+  background-color: #1e1e1e;
+  color: #ffffff;
+  font-size: 14px;
+}
+
+.login-input input::placeholder {
+  color: #9e9e9e;
+}
+
+.login-input input:focus {
+  outline: none;
+  border-color: #1a73e8;
+}
+
+/* ÍCONE DO INPUT */
+.login-input span {
+  position: absolute;
+  top: 50%;
+  left: 12px;
+  transform: translateY(-50%);
+  color: #9e9e9e;
+  font-size: 16px;
+}
+
+/* ================================
+   BOTÃO
+================================ */
+.login-box button {
+  width: 100%;
+  height: 48px;
+  margin-top: 6px;
+  background: linear-gradient(180deg, #1a73e8, #0b5ed7);
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.login-box button:hover {
+  background: linear-gradient(180deg, #0b5ed7, #084298);
+}
+
+/* ================================
+   ERRO
+================================ */
+.login-error {
+  color: #ff4d4d;
+  font-size: 13px;
+  margin-bottom: 10px;
+}
+
+/* ================================
+   RESPONSIVO
+================================ */
+@media (max-width: 900px) {
+  .login-left {
+    display: none;
+  }
+
+  .login-right {
+    flex: 1;
+  }
+
+  .login-box {
+    width: 90%;
+    max-width: 380px;
+  }
+}

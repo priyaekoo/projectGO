@@ -8,6 +8,7 @@ app.use(cors());
 
 // middlewares
 app.use(express.json());
+app.use("/auth", require("./routes/auth.routes"));
 
 // rotas
 app.use("/usuarios", require("./routes/usuarios.routes"));

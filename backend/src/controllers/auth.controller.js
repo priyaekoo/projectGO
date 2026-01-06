@@ -1,23 +1,52 @@
 const pool = require("../config/database");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 exports.login = async (req, res) => {
-  const { email, senha } = req.body;
+  const { usuario, senha } = req.body;
+
+  const result = await pool.query("SELECT * FROM usuarios WHERE email = $1", [
+    usuario,
+  ]);
 
   try {
     const result = await pool.query(
-      "SELECT id, nome_completo, email FROM usuarios WHERE email = $1 AND senha = $2",
-      [email, senha]
+      `SELECT id, nome_completo, email, cpf, senha
+       FROM usuarios
+       WHERE email = $1 OR cpf = $1`,
+      [usuario]
     );
 
-    if (result.rows.length === 0) {
-      return res.status(401).json({ erro: "Credenciais inválidas" });
+    if (result.rowCount === 0) {
+      return res.status(401).json({ erro: "Usuário não encontrado" });
     }
 
-    res.status(200).json({
-      mensagem: "Login realizado com sucesso",
-      usuario: result.rows[0],
+    const user = result.rows[0];
+
+    const senhaValida = bcrypt.compareSync(senha, user.senha);
+
+    if (!senhaValida) {
+      return res.status(401).json({ erro: "Senha inválida" });
+    }
+
+    const token = jwt.sign(
+      {
+        id: user.id,
+        nome: user.nome_completo,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "8h" }
+    );
+
+    return res.json({
+      token,
+      usuario: {
+        id: user.id,
+        nome: user.nome_completo,
+        email: user.email,
+      },
     });
   } catch (error) {
-    res.status(500).json({ erro: error.message });
+    return res.status(500).json({ erro: error.message });
   }
 };

@@ -7,12 +7,9 @@ exports.criar = async (req, res) => {
   try {
     const senhaHash = bcrypt.hashSync(senha, 10);
 
-    const result = await pool.query(
-      `
-      INSERT INTO usuarios (nome_completo, email, cpf, senha)
-      VALUES ($1, $2, $3, $4)
-      RETURNING id, nome_completo, email, cpf
-      `,
+    await pool.query(
+      `INSERT INTO usuarios (nome_completo, email, cpf, senha)
+   VALUES ($1, $2, $3, $4)`,
       [nome_completo, email, cpf, senhaHash]
     );
 
