@@ -31,3 +31,44 @@ exports.consultar = async (req, res) => {
     return res.status(500).json({ erro: error.message });
   }
 };
+
+exports.atualizar = async (req, res) => {
+  const { id } = req.params;
+  const { nome_completo, email, observacao } = req.body; // ajuste os campos conforme sua tabela
+
+  try {
+    const result = await pool.query(
+      `UPDATE pacientes
+       SET nome_completo = $1, email = $2, observacao = $3
+       WHERE id = $4
+       RETURNING *`,
+      [nome_completo, email, observacao, id]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ erro: "Paciente não encontrado" });
+    }
+
+    return res.json(result.rows[0]);
+  } catch (error) {
+    return res.status(500).json({ erro: error.message });
+  }
+};
+
+exports.deletar = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const result = await pool.query("DELETE FROM pacientes WHERE id = $1", [
+      id,
+    ]);
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ erro: "Paciente não encontrado" });
+    }
+
+    return res.json({ mensagem: "Paciente excluído com sucesso" });
+  } catch (error) {
+    return res.status(500).json({ erro: error.message });
+  }
+};
