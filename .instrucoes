@@ -1,0 +1,9 @@
+Aqui são alguns apontamentos para iniciarlziar 
+no terminal dentro da pasta do backend rode:
+
+src/server.js
+o resultado será -> [dotenv@17.2.3] injecting env (5) from .env -- tip: � encrypt with Dotenvx: htt
+ps://dotenvx.com
+� API rodando na porta 3000
+
+todas as vezes que for mexer na controller é necessário reinicar o server
