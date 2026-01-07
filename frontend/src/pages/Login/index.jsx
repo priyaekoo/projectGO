@@ -70,7 +70,13 @@ function Login() {
         }}
       >
         {/* fallback: imagem <img> para garantir visibilidade em caso de problema com background-image */}
-        <img src={loginBg} alt="login-bg" className="login-left-img-fallback" />
+        <img
+          src={loginBg}
+          alt="login-bg"
+          className="login-left-img-fallback"
+          onLoad={() => console.log("[DBG] loginBg <img> loaded (fallback)", loginBg)}
+          onError={(e) => console.error("[DBG] loginBg <img> failed to load", e, loginBg)}
+        />
       </div>
     </div>
   );
