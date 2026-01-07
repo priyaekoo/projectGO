@@ -25,10 +25,20 @@
   position: relative;
   align-self: stretch;
   overflow: hidden;
-  background-size: cover;
+  /* Aumenta o 'zoom' horizontal para evitar cortar a parte direita desejada */
+  background-size: 120% auto;
   background-position: right center;
   background-repeat: no-repeat;
   background-color: rgba(255, 255, 255, 0.02); /* leve fallback para ver área */
+}
+
+/* Ajustes responsivos: menos zoom em telas pequenas, mais em telas grandes */
+@media (min-width: 1200px) {
+  .login-left { background-size: 140% auto; }
+}
+@media (max-width: 900px) and (min-width: 600px) {
+  .login-left { background-size: 110% auto; }
+
 }
 
 /* overlay sutil para melhorar contraste sobre a imagem */
@@ -48,10 +58,16 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: right center; /* focaliza à direita */
   z-index: 9999; /* acima do overlay */
   display: block;
   outline: 3px solid rgba(255,255,255,0.06);
   box-shadow: inset 0 0 60px rgba(0,0,0,0.35);
+  transform: translateX(6%); /* puxa um pouco para a direita */
+}
+
+@media (max-width: 900px) {
+  .login-left-img-fallback { transform: none; object-position: center center; }
 }
 
 
