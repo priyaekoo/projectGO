@@ -1,3 +1,5 @@
+/// <reference types="cypress" />
+
 import auth from "../../fixtures/auth.json";
 
 describe("API - Usuários (rota protegida)", () => {

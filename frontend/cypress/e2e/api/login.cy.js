@@ -1,10 +1,10 @@
-// eslint-disable-next-line no-undef
+/// <reference types="cypress" />
+
 describe("API - Login", () => {
   const baseUrl = "http://localhost:3000";
 
   // eslint-disable-next-line no-undef
   it("CT01 - Login com sucesso retorna token JWT", () => {
-    // eslint-disable-next-line no-undef
     cy.fixture("auth").then((auth) => {
       cy.request({
         method: "POST",

@@ -17,39 +17,66 @@ function Login() {
   useEffect(() => {
     const el = leftRef.current;
     const img = imgRef.current;
-    console.log('[DBG] useEffect: login-left el:', el);
+    console.log("[DBG] useEffect: login-left el:", el);
     if (el) {
-      console.log('[DBG] login-left computed backgroundImage:', getComputedStyle(el).backgroundImage);
-      console.log('[DBG] login-left display/visibility/opacity:', getComputedStyle(el).display, getComputedStyle(el).visibility, getComputedStyle(el).opacity);
-      console.log('[DBG] login-left bounding rect:', el.getBoundingClientRect());
-      console.log('[DBG] login-left children count:', el.children.length, el.children);
+      console.log(
+        "[DBG] login-left computed backgroundImage:",
+        getComputedStyle(el).backgroundImage
+      );
+      console.log(
+        "[DBG] login-left display/visibility/opacity:",
+        getComputedStyle(el).display,
+        getComputedStyle(el).visibility,
+        getComputedStyle(el).opacity
+      );
+      console.log(
+        "[DBG] login-left bounding rect:",
+        el.getBoundingClientRect()
+      );
+      console.log(
+        "[DBG] login-left children count:",
+        el.children.length,
+        el.children
+      );
     }
     if (img) {
-      console.log('[DBG] fallback img attrs src/natural/offset:', img.src, img.naturalWidth, img.naturalHeight, img.offsetWidth, img.offsetHeight);
-      console.log('[DBG] fallback img computed:', getComputedStyle(img).display, getComputedStyle(img).visibility, getComputedStyle(img).opacity);
+      console.log(
+        "[DBG] fallback img attrs src/natural/offset:",
+        img.src,
+        img.naturalWidth,
+        img.naturalHeight,
+        img.offsetWidth,
+        img.offsetHeight
+      );
+      console.log(
+        "[DBG] fallback img computed:",
+        getComputedStyle(img).display,
+        getComputedStyle(img).visibility,
+        getComputedStyle(img).opacity
+      );
       // Force high visibility while debugging
-      img.style.zIndex = '2147483647';
-      img.style.outline = '4px solid lime';
-      img.style.opacity = '1 !important';
-      img.style.display = 'block !important';
-      img.style.visibility = 'visible !important';
-      img.style.pointerEvents = 'none';
-      img.style.transform = 'none';
-      img.style.filter = 'none';
-      img.style.background = 'transparent';
-      img.style.position = 'absolute';
-      img.style.inset = '0';
-      img.style.width = '100%';
-      img.style.height = '100%';
-      img.style.objectFit = 'cover';
+      img.style.zIndex = "2147483647";
+      img.style.outline = "4px solid lime";
+      img.style.opacity = "1 !important";
+      img.style.display = "block !important";
+      img.style.visibility = "visible !important";
+      img.style.pointerEvents = "none";
+      img.style.transform = "none";
+      img.style.filter = "none";
+      img.style.background = "transparent";
+      img.style.position = "absolute";
+      img.style.inset = "0";
+      img.style.width = "100%";
+      img.style.height = "100%";
+      img.style.objectFit = "cover";
 
       // Also remove container background-image to test fallback visibility
       if (el) {
-        console.log('[DBG] Removing container background-image for debug');
-        el.style.backgroundImage = 'none';
+        console.log("[DBG] Removing container background-image for debug");
+        el.style.backgroundImage = "none";
       }
     } else {
-      console.warn('[DBG] fallback img not found');
+      console.warn("[DBG] fallback img not found");
     }
   }, []);
 
@@ -117,8 +144,12 @@ function Login() {
           src={loginBg}
           alt="login-bg"
           className="login-left-img-fallback"
-          onLoad={() => console.log("[DBG] loginBg <img> loaded (fallback)", loginBg)}
-          onError={(e) => console.error("[DBG] loginBg <img> failed to load", e, loginBg)}
+          onLoad={() =>
+            console.log("[DBG] loginBg <img> loaded (fallback)", loginBg)
+          }
+          onError={(e) =>
+            console.error("[DBG] loginBg <img> failed to load", e, loginBg)
+          }
         />
       </div>
     </div>

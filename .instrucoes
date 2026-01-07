@@ -7,3 +7,8 @@ ps://dotenvx.com
 � API rodando na porta 3000
 
 todas as vezes que for mexer na controller é necessário reinicar o server
+
+
+Inicialiazar o backend (dentro da pasta do back) -> node src/server.js
+Inicialiazar o frontend (dentro da pasta do front) -> npm run dev  
+Rodar os testes do Cypress (dentro da pasta do front) - npx cypress open

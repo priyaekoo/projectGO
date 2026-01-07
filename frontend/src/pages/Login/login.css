@@ -26,7 +26,7 @@
   align-self: stretch;
   overflow: hidden;
   /* Aumenta o 'zoom' horizontal para evitar cortar a parte direita desejada */
-  background-size: 120% auto;
+  background-size: 150% auto;
   background-position: right center;
   background-repeat: no-repeat;
   background-color: rgba(255, 255, 255, 0.02); /* leve fallback para ver área */
@@ -34,11 +34,14 @@
 
 /* Ajustes responsivos: menos zoom em telas pequenas, mais em telas grandes */
 @media (min-width: 1200px) {
-  .login-left { background-size: 140% auto; }
+  .login-left {
+    background-size: 140% auto;
+  }
 }
 @media (max-width: 900px) and (min-width: 600px) {
-  .login-left { background-size: 110% auto; }
-
+  .login-left {
+    background-size: 110% auto;
+  }
 }
 
 /* overlay sutil para melhorar contraste sobre a imagem */
@@ -46,7 +49,11 @@
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(to left, rgba(0,0,0,0.45), rgba(0,0,0,0.12));
+  background: linear-gradient(
+    to left,
+    rgba(0, 0, 0, 0.45),
+    rgba(0, 0, 0, 0.12)
+  );
   pointer-events: none;
   z-index: 1;
 }
@@ -61,16 +68,17 @@
   object-position: right center; /* focaliza à direita */
   z-index: 9999; /* acima do overlay */
   display: block;
-  outline: 3px solid rgba(255,255,255,0.06);
-  box-shadow: inset 0 0 60px rgba(0,0,0,0.35);
+  outline: 3px solid rgba(255, 255, 255, 0.06);
+  box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.35);
   transform: translateX(6%); /* puxa um pouco para a direita */
 }
 
 @media (max-width: 900px) {
-  .login-left-img-fallback { transform: none; object-position: center center; }
+  .login-left-img-fallback {
+    transform: none;
+    object-position: center center;
+  }
 }
-
-
 
 /* ================================
    LADO ESQUERDO – FUNDO ESCURO (formulário)
