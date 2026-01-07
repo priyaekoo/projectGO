@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../services/api";
 import logo from "../../assets/logo.png";
+import "./login.css";
 
 function Login() {
   const [usuario, setUsuario] = useState("");
@@ -29,19 +30,13 @@ function Login() {
 
   return (
     <div className="login-container">
-      {/* IMAGEM GRANDE */}
-      <div className="login-left"></div>
-
       {/* FORMULÁRIO */}
       <div className="login-right">
         <div className="login-box">
-          <img src={logo} alt="ProjectGO" className="login-logo" />
-
+          {/* <img src={logo} alt="ProjectGO" className="login-logo" /> */}
           <h2>ProjectGO</h2>
           <p>Sistema de gerenciamento de usuários e pacientes</p>
-
           {erro && <div className="login-error">{erro}</div>}
-
           <div className="login-input">
             <span>👤</span>
             <input
@@ -50,7 +45,6 @@ function Login() {
               onChange={(e) => setUsuario(e.target.value)}
             />
           </div>
-
           <div className="login-input">
             <span>🔒</span>
             <input
@@ -60,10 +54,12 @@ function Login() {
               onChange={(e) => setSenha(e.target.value)}
             />
           </div>
-
           <button onClick={acessar}>Entrar</button>
         </div>
       </div>
+
+      {/* IMAGEM GRANDE */}
+      <div className="login-left"></div>
     </div>
   );
 }
