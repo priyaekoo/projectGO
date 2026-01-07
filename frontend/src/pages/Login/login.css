@@ -20,25 +20,36 @@
   flex: 0 0 60%;
   height: 100vh;
   display: block;
-  position: relative; /* necessário para posicionar .login-left-debug */
+  position: relative;
+  overflow: hidden;
   background-size: cover;
   background-position: right center;
   background-repeat: no-repeat;
-  outline: 4px dashed rgba(0, 255, 0, 0.7);
   background-color: rgba(255, 255, 255, 0.02); /* leve fallback para ver área */
 }
 
-/* debug: imagem inline small to verify asset */
-.login-left-debug {
+/* overlay sutil para melhorar contraste sobre a imagem */
+.login-left::after {
+  content: "";
   position: absolute;
-  top: 18px;
-  right: 18px;
-  width: 140px;
-  height: auto;
-  border: 3px solid lime;
-  box-shadow: 0 0 0 6px rgba(0, 255, 0, 0.06);
-  z-index: 10;
+  inset: 0;
+  background: linear-gradient(to left, rgba(0,0,0,0.45), rgba(0,0,0,0.12));
+  pointer-events: none;
+  z-index: 1;
 }
+
+/* fallback image - garante que a imagem apareça mesmo se background-image não for aplicada */
+.login-left-img-fallback {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+  display: block;
+}
+
+
 
 /* ================================
    LADO ESQUERDO – FUNDO ESCURO (formulário)
@@ -164,7 +175,7 @@
 /* ================================
    RESPONSIVO
 ================================ */
-@media (max-width: 900px) {
+@media (max-width: 600px) {
   .login-left {
     display: none;
   }

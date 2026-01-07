@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../services/api";
 import logo from "../../assets/logo.png";
@@ -63,13 +63,14 @@ function Login() {
       <div
         className="login-left"
         style={{
-          backgroundImage: `linear-gradient(to left, rgba(0,0,0,0.55), rgba(0,0,0,0.15)), url(${loginBg})`,
+          backgroundImage: `url(${loginBg})`,
           backgroundSize: "cover",
-          backgroundPosition: "right center",
+          backgroundRepeat: "no-repeat",
+          backgroundPosition: "center right",
         }}
       >
-        {/* debug: imagem direta para confirmar que o arquivo é servido */}
-        <img src={loginBg} alt="login-bg-inline-debug" className="login-left-debug" />
+        {/* fallback: imagem <img> para garantir visibilidade em caso de problema com background-image */}
+        <img src={loginBg} alt="login-bg" className="login-left-img-fallback" />
       </div>
     </div>
   );
