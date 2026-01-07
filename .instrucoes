@@ -12,3 +12,54 @@ todas as vezes que for mexer na controller é necessário reinicar o server
 Inicialiazar o backend (dentro da pasta do back) -> node src/server.js
 Inicialiazar o frontend (dentro da pasta do front) -> npm run dev  
 Rodar os testes do Cypress (dentro da pasta do front) - npx cypress open
+
+Os Teste de perfomance com K6 só roda quando o backend está iniciado.
+É mais seguro rodar pelo power shell.
+comando foi atualizado.
+
+-> k6 run login-load.js
+
+
+Agora uma analise do testes de carga 
+
+✅ Análise técnica do resultado (QA)
+✔️ Funcionalidade sob carga
+checks_succeeded...: 100.00%
+http_req_failed....: 0.00%
+
+
+👉 Nenhuma falha
+👉 Login está estável sob concorrência
+
+⚡ Performance (excelente)
+http_req_duration (avg): 86.54 ms
+p(95): 90.52 ms
+
+
+📌 Interpretação:
+
+< 100ms → EXCELENTE
+
+p95 < 100ms → ótimo sob carga
+
+pico máximo (839ms) aceitável em ambiente local
+
+👉 Login muito rápido
+
+🔁 Concorrência
+vus: 10
+duration: 30s
+iterations: 280
+
+
+👉 10 usuários simultâneos
+👉 ~9 logins/segundo
+👉 Para ambiente local: mais que suficiente
+
+🌐 Rede (normal)
+data_received: 138 kB
+data_sent: 50 kB
+
+
+👉 Comunicação correta
+👉 Backend respondeu normalmente
