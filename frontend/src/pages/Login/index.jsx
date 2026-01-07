@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../services/api";
 import logo from "../../assets/logo.png";
+import loginBg from "../../assets/login.png";
 import "./login.css";
 
 function Login() {
@@ -59,7 +60,17 @@ function Login() {
       </div>
 
       {/* IMAGEM GRANDE */}
-      <div className="login-left"></div>
+      <div
+        className="login-left"
+        style={{
+          backgroundImage: `linear-gradient(to left, rgba(0,0,0,0.55), rgba(0,0,0,0.15)), url(${loginBg})`,
+          backgroundSize: "cover",
+          backgroundPosition: "right center",
+        }}
+      >
+        {/* debug: imagem direta para confirmar que o arquivo é servido */}
+        <img src={loginBg} alt="login-bg-inline-debug" className="login-left-debug" />
+      </div>
     </div>
   );
 }

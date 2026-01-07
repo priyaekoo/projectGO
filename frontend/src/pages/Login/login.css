@@ -13,25 +13,44 @@
 }
 
 /* ================================
-   LADO ESQUERDO – IMAGEM
+   LADO DIREITO – IMAGEM (posicionada à direita)
 ================================ */
 .login-left {
-  flex: 1;
-  background-image: url("../../assets/login.png");
+  order: 2;
+  flex: 0 0 60%;
+  height: 100vh;
+  display: block;
+  position: relative; /* necessário para posicionar .login-left-debug */
   background-size: cover;
-  background-position: center;
+  background-position: right center;
   background-repeat: no-repeat;
+  outline: 4px dashed rgba(0, 255, 0, 0.7);
+  background-color: rgba(255, 255, 255, 0.02); /* leve fallback para ver área */
+}
+
+/* debug: imagem inline small to verify asset */
+.login-left-debug {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: 140px;
+  height: auto;
+  border: 3px solid lime;
+  box-shadow: 0 0 0 6px rgba(0, 255, 0, 0.06);
+  z-index: 10;
 }
 
 /* ================================
-   LADO DIREITO – FUNDO ESCURO
+   LADO ESQUERDO – FUNDO ESCURO (formulário)
 ================================ */
 .login-right {
-  flex: 1;
+  order: 1;
+  flex: 0 0 40%;
   background: radial-gradient(circle at top, #2a2a2a 0%, #141414 60%);
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 40px 0;
 }
 
 /* ================================
