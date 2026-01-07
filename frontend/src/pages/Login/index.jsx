@@ -28,10 +28,26 @@ function Login() {
       console.log('[DBG] fallback img attrs src/natural/offset:', img.src, img.naturalWidth, img.naturalHeight, img.offsetWidth, img.offsetHeight);
       console.log('[DBG] fallback img computed:', getComputedStyle(img).display, getComputedStyle(img).visibility, getComputedStyle(img).opacity);
       // Force high visibility while debugging
-      img.style.zIndex = '999999';
+      img.style.zIndex = '2147483647';
       img.style.outline = '4px solid lime';
-      img.style.opacity = '1';
-      img.style.display = 'block';
+      img.style.opacity = '1 !important';
+      img.style.display = 'block !important';
+      img.style.visibility = 'visible !important';
+      img.style.pointerEvents = 'none';
+      img.style.transform = 'none';
+      img.style.filter = 'none';
+      img.style.background = 'transparent';
+      img.style.position = 'absolute';
+      img.style.inset = '0';
+      img.style.width = '100%';
+      img.style.height = '100%';
+      img.style.objectFit = 'cover';
+
+      // Also remove container background-image to test fallback visibility
+      if (el) {
+        console.log('[DBG] Removing container background-image for debug');
+        el.style.backgroundImage = 'none';
+      }
     } else {
       console.warn('[DBG] fallback img not found');
     }
