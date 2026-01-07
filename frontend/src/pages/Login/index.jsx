@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../services/api";
-import logo from "../../assets/logo.png";
+//import logo from "../../assets/logo.png";
 import loginBg from "../../assets/login.png";
 import "./login.css";
 
@@ -55,26 +55,10 @@ function Login() {
         getComputedStyle(img).opacity
       );
       // Force high visibility while debugging
-      img.style.zIndex = "2147483647";
+      img.style.zIndex = "999999";
       img.style.outline = "4px solid lime";
-      img.style.opacity = "1 !important";
-      img.style.display = "block !important";
-      img.style.visibility = "visible !important";
-      img.style.pointerEvents = "none";
-      img.style.transform = "none";
-      img.style.filter = "none";
-      img.style.background = "transparent";
-      img.style.position = "absolute";
-      img.style.inset = "0";
-      img.style.width = "100%";
-      img.style.height = "100%";
-      img.style.objectFit = "cover";
-
-      // Also remove container background-image to test fallback visibility
-      if (el) {
-        console.log("[DBG] Removing container background-image for debug");
-        el.style.backgroundImage = "none";
-      }
+      img.style.opacity = "1";
+      img.style.display = "block";
     } else {
       console.warn("[DBG] fallback img not found");
     }
@@ -109,7 +93,7 @@ function Login() {
           <div className="login-input">
             <span>👤</span>
             <input
-              placeholder="Usuário"
+              id="Usuário"
               value={usuario}
               onChange={(e) => setUsuario(e.target.value)}
             />
@@ -118,12 +102,14 @@ function Login() {
             <span>🔒</span>
             <input
               type="password"
-              placeholder="Senha"
+              id="Senha"
               value={senha}
               onChange={(e) => setSenha(e.target.value)}
             />
           </div>
-          <button onClick={acessar}>Entrar</button>
+          <button id="btn-login" onClick={acessar}>
+            Entrar
+          </button>
         </div>
       </div>
 

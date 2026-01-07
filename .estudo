@@ -1,0 +1,34 @@
+Para estudos 
+
+🔌 API → request/response, status code, payload
+
+🧪 E2E (UI) → navegador, DOM, fluxo do usuário
+
+🥇 Onde colocar cada coisa (regra prática)
+🔐 commands.js → AÇÕES
+
+“O que o sistema FAZ”
+
+✔️ Login
+✔️ Criar usuário
+✔️ Deletar usuário
+✔️ Requisições repetidas
+
+📦 fixtures → DADOS
+
+“Com quais dados eu testo”
+
+✔️ Usuário válido
+✔️ Usuário inválido
+✔️ Payloads grandes
+✔️ Massas de teste
+
+🧰 helpers (opcional) → FUNÇÕES PURAS
+
+“Lógica que não é Cypress”
+
+✔️ Gerar CPF
+✔️ Montar payload
+✔️ Formatar dados
+
+

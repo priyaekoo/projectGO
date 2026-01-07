@@ -1,14 +1,13 @@
 /// <reference types="cypress" />
 
 describe("API - Login", () => {
-  const baseUrl = "http://localhost:3000";
+  const apiUrl = "http://localhost:3000";
 
-  // eslint-disable-next-line no-undef
   it("CT01 - Login com sucesso retorna token JWT", () => {
     cy.fixture("auth").then((auth) => {
       cy.request({
         method: "POST",
-        url: `${baseUrl}/auth/login`,
+        url: `${apiUrl}/auth/login`,
         body: auth.loginValido,
       }).then((response) => {
         expect(response.status).to.eq(200);
@@ -22,7 +21,7 @@ describe("API - Login", () => {
     cy.fixture("auth").then((auth) => {
       cy.request({
         method: "POST",
-        url: `${baseUrl}/auth/login`,
+        url: `${apiUrl}/auth/login`,
         body: auth.loginSenhaInvalida,
         failOnStatusCode: false,
       }).then((response) => {
@@ -35,7 +34,7 @@ describe("API - Login", () => {
     cy.fixture("auth").then((auth) => {
       cy.request({
         method: "POST",
-        url: `${baseUrl}/auth/login`,
+        url: `${apiUrl}/auth/login`,
         body: auth.loginUsuarioInexistente,
         failOnStatusCode: false,
       }).then((response) => {
