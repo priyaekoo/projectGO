@@ -4,7 +4,7 @@ const controller = require("../controllers/profissionais.Controller");
 const router = express.Router();
 
 router.post("/", controller.criar);
-// router.get("/", controller.consultar);
+router.get("/", controller.consultar);
 // router.patch("/:id", controller.atualizar);
 // router.delete("/:id", controller.deletar);
 
