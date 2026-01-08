@@ -32,3 +32,12 @@ Para estudos
 ✔️ Formatar dados
 
 
+consultas de banco de dados no pgADM
+
+SELECT id, nome_completo
+FROM pacientes
+WHERE ativo = true
+ORDER BY nome_completo;
+
+
+

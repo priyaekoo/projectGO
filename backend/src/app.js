@@ -14,6 +14,8 @@ app.use("/auth", require("./routes/auth.routes"));
 app.use("/usuarios", require("./routes/usuarios.routes"));
 app.use("/pacientes", require("./routes/pacientes.routes"));
 app.use("/api", require("./routes/upload.routes"));
+app.use("/especialidades", require("./routes/especialidades"));
+app.use("/profissionais", require("./routes/profissionais"));
 
 app.get("/db-test", async (req, res) => {
   const pool = require("./config/database");
