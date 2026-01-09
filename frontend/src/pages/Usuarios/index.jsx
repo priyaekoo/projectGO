@@ -1,118 +1,105 @@
 import { useEffect, useState } from "react";
 import api from "../../services/api";
+import "./usuarios.css";
+
+const ITENS_POR_PAGINA = 10;
 
 function Usuarios() {
   const [usuarios, setUsuarios] = useState([]);
-
-  const [nome, setNome] = useState("");
-  const [email, setEmail] = useState("");
-  const [cpf, setCpf] = useState("");
-  const [senha, setSenha] = useState("");
-
+  const [paginaAtual, setPaginaAtual] = useState(1);
   const [mensagem, setMensagem] = useState("");
   const [erro, setErro] = useState("");
 
   const carregarUsuarios = async () => {
-    const response = await api.get("/usuarios");
-    setUsuarios(response.data);
-  };
-
-  const criarUsuario = async () => {
-    // 🔎 validação básica no front
-    if (!nome || !email || !cpf || !senha) {
-      setErro("Todos os campos são obrigatórios.");
-      setMensagem("");
-      return;
-    }
-
     try {
-      console.log("Enviando para API...");
-      const response = await api.post("/usuarios", {
-        nome_completo: nome,
-        email,
-        cpf,
-        senha,
-      });
-
-      console.log("Resposta da API:", response.data);
-
-      setMensagem("Usuário cadastrado com sucesso!");
-      setErro("");
-
-      // limpa campos
-      setNome("");
-      setEmail("");
-      setCpf("");
-      setSenha("");
-
-      carregarUsuarios();
+      const response = await api.get("/usuarios");
+      setUsuarios(response.data);
     } catch (error) {
-      console.error("Erro ao cadastrar:", error);
-
-      setErro(
-        error.response?.data?.erro ||
-          "Erro ao cadastrar usuário. Verifique os dados."
-      );
-      setMensagem("");
+      setErro("Erro ao carregar usuários.");
     }
   };
 
   const excluirUsuario = async (id) => {
-    await api.delete(`/usuarios/${id}`);
-    carregarUsuarios();
+    if (!window.confirm("Deseja excluir este usuário?")) return;
+
+    try {
+      await api.delete(`/usuarios/${id}`);
+      setMensagem("Usuário excluído com sucesso!");
+      setErro("");
+      carregarUsuarios();
+    } catch {
+      setErro("Erro ao excluir usuário.");
+    }
   };
 
-  useEffect(() => {
-    const carregarUsuarios = async () => {
-      const response = await api.get("/usuarios");
-      setUsuarios(response.data);
-    };
+  const totalPaginas = Math.ceil(usuarios.length / ITENS_POR_PAGINA);
+  const inicio = (paginaAtual - 1) * ITENS_POR_PAGINA;
+  const usuariosPaginados = usuarios.slice(inicio, inicio + ITENS_POR_PAGINA);
 
+  useEffect(() => {
     carregarUsuarios();
   }, []);
 
   return (
-    <div>
-      <h2>Usuários</h2>
+    <div className="usuarios-container">
+      <div className="usuarios-header">
+        <h1>Usuários</h1>
+        <button className="btn-adicionar">+ Adicionar usuário</button>
+      </div>
 
-      {mensagem && <p style={{ color: "green" }}>{mensagem}</p>}
-      {erro && <p style={{ color: "red" }}>{erro}</p>}
+      {mensagem && <p className="mensagem-sucesso">{mensagem}</p>}
+      {erro && <p className="mensagem-erro">{erro}</p>}
 
-      <input
-        placeholder="Nome completo"
-        value={nome}
-        onChange={(e) => setNome(e.target.value)}
-      />
+      <table className="usuarios-tabela">
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Email</th>
+            <th>CPF</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
 
-      <input
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
+        <tbody>
+          {usuariosPaginados.length === 0 ? (
+            <tr>
+              <td colSpan="4">Nenhum usuário encontrado</td>
+            </tr>
+          ) : (
+            usuariosPaginados.map((usuario) => (
+              <tr key={usuario.id}>
+                <td>{usuario.nome_completo}</td>
+                <td>{usuario.email}</td>
+                <td>{usuario.cpf}</td>
+                <td className="acoes">
+                  <button className="btn-acao ver">Ver</button>
+                  <button className="btn-acao editar">Editar</button>
+                  <button
+                    className="btn-acao excluir"
+                    onClick={() => excluirUsuario(usuario.id)}
+                  >
+                    Excluir
+                  </button>
+                </td>
+              </tr>
+            ))
+          )}
+        </tbody>
+      </table>
 
-      <input
-        placeholder="CPF"
-        value={cpf}
-        onChange={(e) => setCpf(e.target.value)}
-      />
-
-      <input
-        type="password"
-        placeholder="Senha"
-        value={senha}
-        onChange={(e) => setSenha(e.target.value)}
-      />
-
-      <button onClick={criarUsuario}>Salvar</button>
-
-      <ul>
-        {usuarios.map((u) => (
-          <li key={u.id}>
-            {u.nome_completo} - {u.email}
-            <button onClick={() => excluirUsuario(u.id)}>Excluir</button>
-          </li>
-        ))}
-      </ul>
+      {totalPaginas > 1 && (
+        <div className="paginacao">
+          {Array.from({ length: totalPaginas }).map((_, index) => (
+            <button
+              key={index}
+              className={paginaAtual === index + 1 ? "ativo" : ""}
+              onClick={() => setPaginaAtual(index + 1)}
+            >
+              {index + 1}
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

@@ -1,0 +1,137 @@
+/* ================================
+   CONTAINER GERAL
+================================ */
+.usuarios-container {
+  width: 100%;
+  max-width: 1400px; /* 🔥 controla o “profissionalismo” */
+}
+
+/* ================================
+   HEADER
+================================ */
+.usuarios-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 32px;
+}
+
+.usuarios-header h1 {
+  font-size: 32px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.btn-adicionar {
+  background: linear-gradient(180deg, #1a73e8, #0b5ed7);
+  color: #fff;
+  border: none;
+  padding: 12px 18px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.btn-adicionar:hover {
+  opacity: 0.9;
+}
+
+/* ================================
+   TABELA
+================================ */
+.usuarios-tabela {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 12px;
+}
+
+.usuarios-tabela thead th {
+  text-align: left;
+  font-size: 13px;
+  font-weight: 500;
+  color: #9e9e9e;
+  padding-bottom: 8px;
+}
+
+.usuarios-tabela tbody tr {
+  background: rgba(35, 35, 35, 0.95);
+  border-radius: 10px;
+}
+
+.usuarios-tabela tbody td {
+  padding: 14px 16px;
+  color: #ffffff;
+  font-size: 14px;
+}
+
+.usuarios-tabela tbody tr td:first-child {
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+}
+
+.usuarios-tabela tbody tr td:last-child {
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+/* ================================
+   AÇÕES
+================================ */
+.acoes {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-acao {
+  padding: 6px 12px;
+  font-size: 13px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-acao.ver {
+  background: #2a2a2a;
+  color: #fff;
+}
+
+.btn-acao.editar {
+  background: #1a73e8;
+  color: #fff;
+}
+
+.btn-acao.excluir {
+  background: transparent;
+  color: #ff6b6b;
+  border: 1px solid #ff6b6b;
+}
+
+.btn-acao.excluir:hover {
+  background: #ff4d4d;
+  color: #fff;
+}
+
+/* ================================
+   PAGINAÇÃO
+================================ */
+.paginacao {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 32px;
+}
+
+.paginacao button {
+  background: #1e1e1e;
+  border: 1px solid #333;
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.paginacao button.ativo {
+  background: #1a73e8;
+  border-color: #1a73e8;
+}

@@ -1,47 +1,38 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
+import "./dashboard.css";
 
-function Login() {
-  const [usuario, setUsuario] = useState("");
-  const [senha, setSenha] = useState("");
-  const [erro, setErro] = useState("");
-
+function Dashboard() {
   const navigate = useNavigate();
 
-  const acessar = () => {
-    if (!usuario || !senha) {
-      setErro("Informe usuário e senha");
-      return;
-    }
-
-    // 🔐 login fake (por enquanto)
-    localStorage.setItem("logado", "true");
-    navigate("/");
+  const logout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("usuario");
+    navigate("/login");
   };
 
   return (
-    <div style={{ width: 300, margin: "100px auto" }}>
-      <h2>ProjectGO</h2>
-      <p>Sistema de gerenciamento de usuários e pacientes</p>
+    <div className="dashboard-container">
+      <aside className="sidebar">
+        <h3>MENU</h3>
 
-      {erro && <p style={{ color: "red" }}>{erro}</p>}
+        <button onClick={() => navigate("usuarios")}>Usuários</button>
 
-      <input
-        placeholder="Usuário"
-        value={usuario}
-        onChange={(e) => setUsuario(e.target.value)}
-      />
+        <button onClick={() => navigate("pacientes")}>Pacientes</button>
 
-      <input
-        type="password"
-        placeholder="Senha"
-        value={senha}
-        onChange={(e) => setSenha(e.target.value)}
-      />
+        <button onClick={() => navigate("especialidades")}>
+          Especialidades
+        </button>
 
-      <button onClick={acessar}>Entrar</button>
+        <button className="logout" onClick={logout}>
+          Sair
+        </button>
+      </aside>
+
+      <main className="content">
+        <Outlet />
+      </main>
     </div>
   );
 }
 
-export default Login;
+export default Dashboard;

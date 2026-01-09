@@ -90,7 +90,10 @@ exports.atualizar = async (req, res) => {
       return res.status(404).json({ erro: "Paciente não encontrado" });
     }
 
-    return res.json(result.rows[0]);
+    return res.status(200).json({
+      mensagem: "Paciente atualizado com sucesso",
+      paciente: result.rows[0],
+    });
   } catch (error) {
     return res.status(500).json({ erro: error.message });
   }

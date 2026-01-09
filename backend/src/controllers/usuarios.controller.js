@@ -71,7 +71,10 @@ exports.atualizar = async (req, res) => {
       return res.status(404).json({ erro: "Usuário não encontrado" });
     }
 
-    return res.json(result.rows[0]);
+    return res.status(200).json({
+      mensagem: "Usuário atualizado com sucesso",
+      usuario: result.rows[0],
+    });
   } catch (error) {
     // email duplicado
     if (error.code === "23505") {
