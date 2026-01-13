@@ -20,10 +20,14 @@ function Usuarios() {
     const digits = String(value).replace(/\D/g, "").slice(0, 11);
     if (digits.length <= 3) return digits;
     if (digits.length <= 6) return digits.replace(/(\d{3})(\d+)/, "$1.$2");
-    if (digits.length <= 9) return digits.replace(/(\d{3})(\d{3})(\d+)/, "$1.$2.$3");
-    return digits.replace(/(\d{3})(\d{3})(\d{3})(\d{0,2})/, function (_, a, b, c, d) {
-      return d ? `${a}.${b}.${c}-${d}` : `${a}.${b}.${c}`;
-    });
+    if (digits.length <= 9)
+      return digits.replace(/(\d{3})(\d{3})(\d+)/, "$1.$2.$3");
+    return digits.replace(
+      /(\d{3})(\d{3})(\d{3})(\d{0,2})/,
+      function (_, a, b, c, d) {
+        return d ? `${a}.${b}.${c}-${d}` : `${a}.${b}.${c}`;
+      }
+    );
   }
 
   function unformatCpf(value) {
@@ -157,7 +161,10 @@ function Usuarios() {
     const valor = (valorFiltro || "").toString().trim().toLowerCase();
 
     if (tipoFiltro === "nome") {
-      return !valor || (u.nome_completo && u.nome_completo.toLowerCase().includes(valor));
+      return (
+        !valor ||
+        (u.nome_completo && u.nome_completo.toLowerCase().includes(valor))
+      );
     }
 
     if (tipoFiltro === "email") {
@@ -174,7 +181,10 @@ function Usuarios() {
 
   const totalPaginas = Math.ceil(usuariosFiltrados.length / ITENS_POR_PAGINA);
   const inicio = (paginaAtual - 1) * ITENS_POR_PAGINA;
-  const usuariosPaginados = usuariosFiltrados.slice(inicio, inicio + ITENS_POR_PAGINA);
+  const usuariosPaginados = usuariosFiltrados.slice(
+    inicio,
+    inicio + ITENS_POR_PAGINA
+  );
 
   return (
     <div className="usuarios-container">
@@ -187,7 +197,11 @@ function Usuarios() {
       </div>
 
       <div className="usuarios-filtros">
-        <select name="tipoFiltro" value={tipoFiltro} onChange={handleTipoFiltroChange}>
+        <select
+          name="tipoFiltro"
+          value={tipoFiltro}
+          onChange={handleTipoFiltroChange}
+        >
           <option value="">Selecione o filtro</option>
           <option value="nome">Nome</option>
           <option value="email">E-mail</option>
@@ -206,7 +220,9 @@ function Usuarios() {
                   ? "Digite o e-mail"
                   : "Digite o nome"
               }
-              value={tipoFiltro === "cpf" ? formatCpf(valorFiltro) : valorFiltro}
+              value={
+                tipoFiltro === "cpf" ? formatCpf(valorFiltro) : valorFiltro
+              }
               onChange={handleValorFiltroChange}
             />
 
