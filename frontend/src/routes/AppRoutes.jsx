@@ -3,19 +3,17 @@ import Login from "../pages/Login";
 import Dashboard from "../pages/Dashboard";
 import HomeDashboard from "../pages/Dashboard/Home";
 import Usuarios from "../pages/Usuarios";
+import UsuarioForm from "../pages/Usuarios/UsuarioForm";
 import PrivateRoute from "./PrivateRoute";
 
 function AppRoutes() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* rota inicial */}
         <Route path="/" element={<Navigate to="/login" />} />
 
-        {/* login */}
         <Route path="/login" element={<Login />} />
 
-        {/* dashboard (layout protegido) */}
         <Route
           path="/dashboard"
           element={
@@ -24,14 +22,9 @@ function AppRoutes() {
             </PrivateRoute>
           }
         >
-          {/* HOME do dashboard */}
           <Route index element={<HomeDashboard />} />
-
-          {/* rotas filhas */}
           <Route path="usuarios" element={<Usuarios />} />
-
-          {/* depois você adiciona:
-              pacientes, especialidades, atendimentos */}
+          <Route path="usuarios/novo" element={<UsuarioForm />} />
         </Route>
       </Routes>
     </BrowserRouter>

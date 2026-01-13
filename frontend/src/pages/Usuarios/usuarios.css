@@ -3,7 +3,8 @@
 ================================ */
 .usuarios-container {
   width: 100%;
-  max-width: 1400px; /* 🔥 controla o “profissionalismo” */
+  height: 100%;
+  box-sizing: border-box;
 }
 
 /* ================================
@@ -134,4 +135,14 @@
 .paginacao button.ativo {
   background: #1a73e8;
   border-color: #1a73e8;
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
 }

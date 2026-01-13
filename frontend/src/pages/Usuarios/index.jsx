@@ -9,15 +9,54 @@ function Usuarios() {
   const [paginaAtual, setPaginaAtual] = useState(1);
   const [mensagem, setMensagem] = useState("");
   const [erro, setErro] = useState("");
+  const [modalAberto, setModalAberto] = useState(false);
+
+  const [form, setForm] = useState({
+    nome_completo: "",
+    email: "",
+    cpf: "",
+    senha: "",
+  });
 
   const carregarUsuarios = async () => {
     try {
       const response = await api.get("/usuarios");
       setUsuarios(response.data);
-    } catch (error) {
+    } catch {
       setErro("Erro ao carregar usuários.");
     }
   };
+
+  useEffect(() => {
+    carregarUsuarios();
+  }, []);
+
+  function handleChange(e) {
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value,
+    });
+  }
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+
+    try {
+      await api.post("/usuarios", form);
+      setMensagem("Usuário cadastrado com sucesso!");
+      setErro("");
+      setModalAberto(false);
+      setForm({
+        nome_completo: "",
+        email: "",
+        cpf: "",
+        senha: "",
+      });
+      carregarUsuarios();
+    } catch {
+      setErro("Erro ao cadastrar usuário.");
+    }
+  }
 
   const excluirUsuario = async (id) => {
     if (!window.confirm("Deseja excluir este usuário?")) return;
@@ -36,15 +75,14 @@ function Usuarios() {
   const inicio = (paginaAtual - 1) * ITENS_POR_PAGINA;
   const usuariosPaginados = usuarios.slice(inicio, inicio + ITENS_POR_PAGINA);
 
-  useEffect(() => {
-    carregarUsuarios();
-  }, []);
-
   return (
     <div className="usuarios-container">
       <div className="usuarios-header">
         <h1>Usuários</h1>
-        <button className="btn-adicionar">+ Adicionar usuário</button>
+
+        <button className="btn-adicionar" onClick={() => setModalAberto(true)}>
+          + Adicionar usuário
+        </button>
       </div>
 
       {mensagem && <p className="mensagem-sucesso">{mensagem}</p>}
@@ -98,6 +136,62 @@ function Usuarios() {
               {index + 1}
             </button>
           ))}
+        </div>
+      )}
+
+      {/* MODAL */}
+      {modalAberto && (
+        <div className="modal-overlay">
+          <div className="modal">
+            <h2>Novo Usuário</h2>
+
+            <form onSubmit={handleSubmit} className="form">
+              <input
+                type="text"
+                name="nome_completo"
+                placeholder="Nome completo"
+                value={form.nome_completo}
+                onChange={handleChange}
+                required
+              />
+
+              <input
+                type="email"
+                name="email"
+                placeholder="Email"
+                value={form.email}
+                onChange={handleChange}
+                required
+              />
+
+              <input
+                type="text"
+                name="cpf"
+                placeholder="CPF"
+                value={form.cpf}
+                onChange={handleChange}
+                required
+              />
+
+              <input
+                type="password"
+                name="senha"
+                placeholder="Senha"
+                value={form.senha}
+                onChange={handleChange}
+                required
+              />
+
+              <div className="acoes">
+                <button type="button" onClick={() => setModalAberto(false)}>
+                  Cancelar
+                </button>
+                <button type="submit" className="btn-adicionar">
+                  Salvar
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       )}
     </div>
