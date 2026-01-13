@@ -11,6 +11,42 @@ function Usuarios() {
   const [erro, setErro] = useState("");
   const [modalAberto, setModalAberto] = useState(false);
 
+  // filtro por seletor (tipo + valor)
+  const [tipoFiltro, setTipoFiltro] = useState("");
+  const [valorFiltro, setValorFiltro] = useState("");
+
+  function formatCpf(value) {
+    if (!value) return "";
+    const digits = String(value).replace(/\D/g, "").slice(0, 11);
+    if (digits.length <= 3) return digits;
+    if (digits.length <= 6) return digits.replace(/(\d{3})(\d+)/, "$1.$2");
+    if (digits.length <= 9) return digits.replace(/(\d{3})(\d{3})(\d+)/, "$1.$2.$3");
+    return digits.replace(/(\d{3})(\d{3})(\d{3})(\d{0,2})/, function (_, a, b, c, d) {
+      return d ? `${a}.${b}.${c}-${d}` : `${a}.${b}.${c}`;
+    });
+  }
+
+  function unformatCpf(value) {
+    return value ? String(value).replace(/\D/g, "") : "";
+  }
+
+  function handleTipoFiltroChange(e) {
+    setTipoFiltro(e.target.value);
+    setValorFiltro("");
+    setPaginaAtual(1);
+  }
+
+  function handleValorFiltroChange(e) {
+    if (tipoFiltro === "cpf") {
+      const digits = unformatCpf(e.target.value);
+      setValorFiltro(digits);
+    } else {
+      setValorFiltro(e.target.value);
+    }
+
+    setPaginaAtual(1);
+  }
+
   const [form, setForm] = useState({
     nome_completo: "",
     email: "",
@@ -32,14 +68,56 @@ function Usuarios() {
   }, []);
 
   function handleChange(e) {
-    setForm({
-      ...form,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value } = e.target;
+
+    if (name === "cpf") {
+      // armazena apenas dígitos
+      setForm({
+        ...form,
+        cpf: unformatCpf(value),
+      });
+    } else {
+      setForm({
+        ...form,
+        [name]: value,
+      });
+    }
+  }
+
+  function isValidCPFFront(value) {
+    if (!value) return false;
+    const digits = String(value).replace(/\D/g, "");
+    if (digits.length !== 11) return false;
+    if (/^(\d)\1{10}$/.test(digits)) return false;
+
+    const calcCheckDigit = (arr) => {
+      let sum = 0;
+      for (let i = 0; i < arr.length; i++) {
+        sum += Number(arr[i]) * (arr.length + 1 - i);
+      }
+      const mod = (sum * 10) % 11;
+      return mod === 10 ? 0 : mod;
+    };
+
+    const numbers = digits.split("");
+    const dv1 = calcCheckDigit(numbers.slice(0, 9));
+    const dv2 = calcCheckDigit(numbers.slice(0, 9).concat(String(dv1)));
+
+    return dv1 === Number(numbers[9]) && dv2 === Number(numbers[10]);
   }
 
   async function handleSubmit(e) {
     e.preventDefault();
+
+    // limpar mensagens anteriores
+    setErro("");
+    setMensagem("");
+
+    // validação client-side de CPF
+    if (!isValidCPFFront(form.cpf)) {
+      setErro("CPF inválido");
+      return;
+    }
 
     try {
       await api.post("/usuarios", form);
@@ -53,8 +131,10 @@ function Usuarios() {
         senha: "",
       });
       carregarUsuarios();
-    } catch {
-      setErro("Erro ao cadastrar usuário.");
+    } catch (error) {
+      const msg = error?.response?.data?.erro || "Erro ao cadastrar usuário.";
+      setErro(msg);
+      setMensagem("");
     }
   }
 
@@ -71,9 +151,30 @@ function Usuarios() {
     }
   };
 
-  const totalPaginas = Math.ceil(usuarios.length / ITENS_POR_PAGINA);
+  const usuariosFiltrados = usuarios.filter((u) => {
+    if (!tipoFiltro) return true;
+
+    const valor = (valorFiltro || "").toString().trim().toLowerCase();
+
+    if (tipoFiltro === "nome") {
+      return !valor || (u.nome_completo && u.nome_completo.toLowerCase().includes(valor));
+    }
+
+    if (tipoFiltro === "email") {
+      return !valor || (u.email && u.email.toLowerCase().includes(valor));
+    }
+
+    if (tipoFiltro === "cpf") {
+      const cpfUser = (u.cpf || "").replace(/\D/g, "");
+      return !valor || cpfUser.includes((valor || "").replace(/\D/g, ""));
+    }
+
+    return true;
+  });
+
+  const totalPaginas = Math.ceil(usuariosFiltrados.length / ITENS_POR_PAGINA);
   const inicio = (paginaAtual - 1) * ITENS_POR_PAGINA;
-  const usuariosPaginados = usuarios.slice(inicio, inicio + ITENS_POR_PAGINA);
+  const usuariosPaginados = usuariosFiltrados.slice(inicio, inicio + ITENS_POR_PAGINA);
 
   return (
     <div className="usuarios-container">
@@ -83,6 +184,44 @@ function Usuarios() {
         <button className="btn-adicionar" onClick={() => setModalAberto(true)}>
           + Adicionar usuário
         </button>
+      </div>
+
+      <div className="usuarios-filtros">
+        <select name="tipoFiltro" value={tipoFiltro} onChange={handleTipoFiltroChange}>
+          <option value="">Selecione o filtro</option>
+          <option value="nome">Nome</option>
+          <option value="email">E-mail</option>
+          <option value="cpf">CPF</option>
+        </select>
+
+        {tipoFiltro && (
+          <>
+            <input
+              type="text"
+              name="valorFiltro"
+              placeholder={
+                tipoFiltro === "cpf"
+                  ? "Digite o CPF"
+                  : tipoFiltro === "email"
+                  ? "Digite o e-mail"
+                  : "Digite o nome"
+              }
+              value={tipoFiltro === "cpf" ? formatCpf(valorFiltro) : valorFiltro}
+              onChange={handleValorFiltroChange}
+            />
+
+            <button
+              className="btn-limpar"
+              type="button"
+              onClick={() => {
+                setTipoFiltro("");
+                setValorFiltro("");
+              }}
+            >
+              Limpar
+            </button>
+          </>
+        )}
       </div>
 
       {mensagem && <p className="mensagem-sucesso">{mensagem}</p>}
@@ -106,11 +245,10 @@ function Usuarios() {
           ) : (
             usuariosPaginados.map((usuario) => (
               <tr key={usuario.id}>
-                <td>{usuario.nome_completo}</td>
-                <td>{usuario.email}</td>
-                <td>{usuario.cpf}</td>
-                <td className="acoes">
-                  <button className="btn-acao ver">Ver</button>
+                <td data-label="Nome">{usuario.nome_completo}</td>
+                <td data-label="Email">{usuario.email}</td>
+                <td data-label="CPF">{formatCpf(usuario.cpf)}</td>
+                <td className="acoes" data-label="Ações">
                   <button className="btn-acao editar">Editar</button>
                   <button
                     className="btn-acao excluir"
@@ -168,7 +306,7 @@ function Usuarios() {
                 type="text"
                 name="cpf"
                 placeholder="CPF"
-                value={form.cpf}
+                value={formatCpf(form.cpf)}
                 onChange={handleChange}
                 required
               />

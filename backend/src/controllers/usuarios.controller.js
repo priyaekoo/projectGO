@@ -1,11 +1,17 @@
 const pool = require("../config/database");
 const bcrypt = require("bcryptjs");
+const { isValidCPF } = require("../utils/validators");
 
 /**
  * Criar usuário
  */
 exports.criar = async (req, res) => {
   const { nome_completo, email, cpf, senha } = req.body;
+
+  // Validação básica de CPF
+  if (!isValidCPF(cpf)) {
+    return res.status(400).json({ erro: "CPF inválido" });
+  }
 
   try {
     const senhaHash = bcrypt.hashSync(senha, 10);
@@ -38,7 +44,7 @@ exports.criar = async (req, res) => {
 exports.consultar = async (req, res) => {
   try {
     const result = await pool.query(
-      `SELECT id, nome_completo, email
+      `SELECT id, nome_completo, email, cpf
        FROM usuarios
        WHERE ativo = true`
     );

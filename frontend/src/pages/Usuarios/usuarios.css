@@ -3,8 +3,9 @@
 ================================ */
 .usuarios-container {
   width: 100%;
-  height: 100%;
+  max-width: none;
   box-sizing: border-box;
+  padding-right: 12px;
 }
 
 /* ================================
@@ -43,6 +44,7 @@
 ================================ */
 .usuarios-tabela {
   width: 100%;
+  table-layout: fixed;
   border-collapse: separate;
   border-spacing: 0 12px;
 }
@@ -55,25 +57,45 @@
   padding-bottom: 8px;
 }
 
+/* Distribuição de colunas para ocupar toda a largura */
+.usuarios-tabela thead tr {
+  display: grid;
+  grid-template-columns: 40% 35% 15% 10%;
+  gap: 12px;
+}
+
 .usuarios-tabela tbody tr {
+  display: grid;
+  grid-template-columns: 40% 35% 15% 10%;
+  gap: 12px;
+  width: 100%;
   background: rgba(35, 35, 35, 0.95);
   border-radius: 10px;
+  align-items: center;
+  padding: 12px;
+  box-sizing: border-box;
 }
 
 .usuarios-tabela tbody td {
-  padding: 14px 16px;
+  padding: 0;
   color: #ffffff;
   font-size: 14px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.usuarios-tabela tbody tr td:first-child {
-  border-top-left-radius: 10px;
-  border-bottom-left-radius: 10px;
+/* alinhar os botões de ação à direita */
+.acoes {
+  display: flex;
+  gap: 10px;
+  justify-self: end;
 }
 
+/* remover bordas aplicadas nos td (agora o tr tem o fundo arredondado) */
+.usuarios-tabela tbody tr td:first-child,
 .usuarios-tabela tbody tr td:last-child {
-  border-top-right-radius: 10px;
-  border-bottom-right-radius: 10px;
+  border-radius: 0;
 }
 
 /* ================================
@@ -92,11 +114,6 @@
   cursor: pointer;
 }
 
-.btn-acao.ver {
-  background: #2a2a2a;
-  color: #fff;
-}
-
 .btn-acao.editar {
   background: #1a73e8;
   color: #fff;
@@ -111,6 +128,58 @@
 .btn-acao.excluir:hover {
   background: #ff4d4d;
   color: #fff;
+}
+
+/* filtros */
+.usuarios-filtros {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+  align-items: center;
+}
+
+.usuarios-filtros select,
+.usuarios-filtros input {
+  background: #1e1e1e;
+  border: 1px solid #333;
+  color: #fff;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.usuarios-filtros select {
+  min-width: 200px;
+}
+
+.usuarios-filtros input {
+  min-width: 240px;
+}
+
+.btn-limpar {
+  background: transparent;
+  color: #fff;
+  border: 1px solid #444;
+  padding: 10px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+@media (max-width: 800px) {
+  .usuarios-filtros {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .usuarios-filtros select,
+  .usuarios-filtros input {
+    width: 100%;
+  }
+
+  .btn-limpar {
+    align-self: flex-end;
+  }
 }
 
 /* ================================
@@ -137,12 +206,90 @@
   border-color: #1a73e8;
 }
 
+/* ================================
+   MODAL
+================================ */
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.75);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 9999;
+}
+
+.modal {
+  background: #1f1f1f;
+  width: 520px;
+  max-width: 90%;
+  padding: 32px;
+  border-radius: 12px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9);
+}
+
+.modal h2 {
+  margin-bottom: 20px;
+  font-size: 22px;
+  color: #fff;
+}
+
+.modal .form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.modal .form input {
+  height: 42px;
+  padding: 0 12px;
+  border-radius: 6px;
+  border: none;
+  background: #2b2b2b;
+  color: #fff;
+}
+
+.modal .form input::placeholder {
+  color: #aaa;
+}
+
+.modal .acoes {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+/* ================================
+   RESPONSIVIDADE (TABELA DE USUÁRIOS)
+================================ */
+@media (max-width: 800px) {
+  .usuarios-tabela thead {
+    display: none;
+  }
+
+  .usuarios-tabela tbody tr {
+    grid-template-columns: 1fr;
+    padding: 14px 12px;
+  }
+
+  .usuarios-tabela tbody td {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+  }
+
+  .usuarios-tabela tbody td::before {
+    content: attr(data-label) ":";
+    color: #9e9e9e;
+    margin-right: 12px;
+    font-size: 13px;
+    min-width: 70px;
+    white-space: nowrap;
+  }
+
+  .acoes {
+    justify-self: end;
+    gap: 8px;
+  }
 }

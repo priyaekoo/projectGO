@@ -1,8 +1,9 @@
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import "./dashboard.css";
 
 function Dashboard() {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const logout = () => {
     localStorage.removeItem("token");
@@ -10,15 +11,16 @@ function Dashboard() {
     navigate("/login");
   };
 
+  // rotas que precisam ocupar mais largura
+  const isWidePage = location.pathname.includes("/usuarios");
+
   return (
     <div className="dashboard-container">
       <aside className="sidebar">
         <h3>MENU</h3>
 
         <button onClick={() => navigate("usuarios")}>Usuários</button>
-
         <button onClick={() => navigate("pacientes")}>Pacientes</button>
-
         <button onClick={() => navigate("especialidades")}>
           Especialidades
         </button>
@@ -28,7 +30,7 @@ function Dashboard() {
         </button>
       </aside>
 
-      <main className="content">
+      <main className={`content ${isWidePage ? "content-wide" : ""}`}>
         <Outlet />
       </main>
     </div>

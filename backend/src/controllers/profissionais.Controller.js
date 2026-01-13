@@ -1,4 +1,5 @@
 const pool = require("../config/database");
+const { isValidCPF } = require("../utils/validators");
 
 /**
  * Criar profissional
@@ -6,6 +7,11 @@ const pool = require("../config/database");
 exports.criar = async (req, res) => {
   const { nome_completo, cpf, registro_profissional, id_especialidade } =
     req.body;
+
+  // validar CPF
+  if (!isValidCPF(cpf)) {
+    return res.status(400).json({ erro: "CPF inválido" });
+  }
 
   try {
     const result = await pool.query(
