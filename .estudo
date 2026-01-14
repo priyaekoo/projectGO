@@ -40,4 +40,39 @@ WHERE ativo = true
 ORDER BY nome_completo;
 
 
+🧰  REGRA DE OURO PARA QUEM FAZ AUTOMAÇÃO E DEPENDE DE CPF E CNPJ VÁLIDOS.
+- FAZER A INSTALAÇÃO DA DEPENDENCIA 
+"npm install cpf-cnpj-validator --save-dev"
+
+Deve ser feita dentro da pasta que o cypress está.
+
+no arquivo do commands usar o 
+
+const cpfValido = cpf.generate();
+Cypress.Commands.add("gerarCPFValido", () => {
+  return cpfValido;
+});
+
+depois chama a função que nesse caso é "cy.gerarCPFValido", sem a necessidade daquele código gigante
+
+🧠 Como pensar como QA (regra de ouro)
+
+🔹 Faker = dados realistas
+🔹 cpf-cnpj-validator = dados válidos
+🔹 Backend = regras de negócio
+🔹 Cypress = valida comportamento
+
+
+🧰 dependencia di FAKER 
+npm install @faker-js/faker --save-dev
+
+e depois o uso nos testes.
+
+import { faker } from "@faker-js/faker";
+
+como usar
+Nome completo - faker.person.fullName();
+Email - faker.internet.email();
+Texto - faker.lorem.sentence();
+
 
