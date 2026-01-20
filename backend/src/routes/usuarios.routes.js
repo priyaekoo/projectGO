@@ -8,4 +8,7 @@ router.get("/", controller.consultar);
 router.patch("/:id", controller.atualizar);
 router.delete("/:id", controller.deletar);
 
+// 🔽 NOVA ROTA (consulta por ID)
+router.get("/:id", controller.consultarPorId);
+
 module.exports = router;

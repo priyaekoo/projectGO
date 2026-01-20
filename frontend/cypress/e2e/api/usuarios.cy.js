@@ -39,10 +39,11 @@ describe("API - Usuários (rota protegida)", () => {
   });
 
   it("CT03 - Criar usuário com sucesso (token válido)", () => {
-    const criarUsuarios = faker.person.fullName();
+    const nome = faker.person.fullName();
+
     cy.gerarCPFValido().then((cpf) => {
       const usuario = {
-        nome_completo: criarUsuarios,
+        nome_completo: nome,
         email: `usuario_${Date.now()}@email.com`,
         cpf: cpf,
         senha: "123456",
@@ -51,7 +52,17 @@ describe("API - Usuários (rota protegida)", () => {
       cy.apiRequest("POST", "/usuarios", usuario).then((response) => {
         expect(response.status).to.eq(201);
         expect(response.body).to.have.property("id");
-        usuariosCriados.push(response.body.id);
+
+        const userId = response.body.id;
+        usuariosCriados.push(userId);
+
+        // 🔍 Validação no "banco" via API de consulta
+        cy.apiRequest("GET", `/usuarios/${userId}`).then((getResponse) => {
+          expect(getResponse.status).to.eq(200);
+          expect(getResponse.body.nome_completo).to.eq(usuario.nome_completo);
+          expect(getResponse.body.email).to.eq(usuario.email);
+          expect(getResponse.body.cpf).to.eq(usuario.cpf);
+        });
       });
     });
   });

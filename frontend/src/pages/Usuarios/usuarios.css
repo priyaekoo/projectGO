@@ -40,97 +40,8 @@
 }
 
 /* ================================
-   TABELA
+   FILTROS
 ================================ */
-.usuarios-tabela {
-  width: 100%;
-  table-layout: fixed;
-  border-collapse: separate;
-  border-spacing: 0 12px;
-}
-
-.usuarios-tabela thead th {
-  text-align: left;
-  font-size: 13px;
-  font-weight: 500;
-  color: #9e9e9e;
-  padding-bottom: 8px;
-}
-
-/* Distribuição de colunas para ocupar toda a largura */
-.usuarios-tabela thead tr {
-  display: grid;
-  grid-template-columns: 40% 35% 15% 10%;
-  gap: 12px;
-}
-
-.usuarios-tabela tbody tr {
-  display: grid;
-  grid-template-columns: 40% 35% 15% 10%;
-  gap: 12px;
-  width: 100%;
-  background: rgba(35, 35, 35, 0.95);
-  border-radius: 10px;
-  align-items: center;
-  padding: 12px;
-  box-sizing: border-box;
-}
-
-.usuarios-tabela tbody td {
-  padding: 0;
-  color: #ffffff;
-  font-size: 14px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-/* alinhar os botões de ação à direita */
-.acoes {
-  display: flex;
-  gap: 10px;
-  justify-self: end;
-}
-
-/* remover bordas aplicadas nos td (agora o tr tem o fundo arredondado) */
-.usuarios-tabela tbody tr td:first-child,
-.usuarios-tabela tbody tr td:last-child {
-  border-radius: 0;
-}
-
-/* ================================
-   AÇÕES
-================================ */
-.acoes {
-  display: flex;
-  gap: 10px;
-}
-
-.btn-acao {
-  padding: 6px 12px;
-  font-size: 13px;
-  border-radius: 6px;
-  border: none;
-  cursor: pointer;
-}
-
-.btn-acao.editar {
-  background: #1a73e8;
-  color: #fff;
-}
-
-.btn-acao.excluir {
-  background: transparent;
-  color: #ff6b6b;
-  border: 1px solid #ff6b6b;
-}
-
-.btn-acao.excluir:hover {
-  background: #ff4d4d;
-  color: #fff;
-}
-
-/* filtros */
 .usuarios-filtros {
   display: flex;
   gap: 12px;
@@ -165,21 +76,76 @@
   cursor: pointer;
 }
 
-@media (max-width: 800px) {
-  .usuarios-filtros {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 8px;
-  }
+/* ================================
+   MENSAGENS
+================================ */
+.mensagem-sucesso {
+  color: #4caf50;
+  margin-bottom: 12px;
+}
 
-  .usuarios-filtros select,
-  .usuarios-filtros input {
-    width: 100%;
-  }
+.mensagem-erro {
+  color: #ff6b6b;
+  margin-bottom: 12px;
+}
 
-  .btn-limpar {
-    align-self: flex-end;
-  }
+/* ================================
+   TABELA
+================================ */
+.usuarios-tabela {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: separate;
+  border-spacing: 0 12px;
+}
+
+/* HEADER DA TABELA */
+.usuarios-tabela thead th {
+  text-align: left;
+  font-size: 13px;
+  font-weight: 500;
+  color: #9e9e9e;
+  padding-bottom: 8px;
+}
+
+/* GRID DA TABELA (5 COLUNAS) */
+.usuarios-tabela thead tr,
+.usuarios-tabela tbody tr {
+  display: grid;
+  grid-template-columns: 32% 28% 15% 10% 15%;
+  gap: 12px;
+}
+
+/* LINHA */
+.usuarios-tabela tbody tr {
+  width: 100%;
+  background: rgba(35, 35, 35, 0.95);
+  border-radius: 10px;
+  align-items: center;
+  padding: 12px;
+  box-sizing: border-box;
+}
+
+.usuarios-tabela tbody td {
+  padding: 0;
+  color: #ffffff;
+  font-size: 14px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ================================
+   STATUS
+================================ */
+.status-ativo {
+  color: #2e7d32;
+  font-weight: 600;
+}
+
+.status-inativo {
+  color: #c62828;
+  font-weight: 600;
 }
 
 /* ================================
@@ -255,15 +221,29 @@
 
 .modal .acoes {
   display: flex;
-  justify-content: flex-end;
-  gap: 12px;
-  margin-top: 20px;
+  gap: 10px;
+  justify-self: center;
 }
 
 /* ================================
-   RESPONSIVIDADE (TABELA DE USUÁRIOS)
+   RESPONSIVIDADE
 ================================ */
 @media (max-width: 800px) {
+  .usuarios-filtros {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .usuarios-filtros select,
+  .usuarios-filtros input {
+    width: 100%;
+  }
+
+  .btn-limpar {
+    align-self: flex-end;
+  }
+
   .usuarios-tabela thead {
     display: none;
   }
@@ -287,9 +267,85 @@
     min-width: 70px;
     white-space: nowrap;
   }
+}
+/* ================================
+   AÇÕES COM ÍCONES
+================================ */
+.acoes {
+  display: flex;
+  gap: 10px;
+  justify-self: end;
+}
 
-  .acoes {
-    justify-self: end;
-    gap: 8px;
-  }
+.btn-icon {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Editar */
+.btn-icon.editar {
+  color: #1a73e8;
+}
+
+.btn-icon.editar:hover {
+  background: rgba(26, 115, 232, 0.15);
+}
+
+/* Inativar */
+.btn-icon.excluir {
+  color: #ff6b6b;
+}
+
+.btn-icon.excluir:hover {
+  background: rgba(255, 107, 107, 0.15);
+}
+/* Centraliza o título da coluna Ações */
+.usuarios-tabela thead th:last-child {
+  text-align: center;
+}
+/* ================================
+   AÇÕES COM ÍCONES
+================================ */
+.usuarios-tabela thead th:last-child {
+  text-align: center;
+}
+
+.acoes {
+  display: flex;
+  gap: 10px;
+  justify-self: center;
+  align-items: center;
+}
+
+.btn-icon {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-icon.editar {
+  color: #1a73e8;
+}
+
+.btn-icon.editar:hover {
+  background: rgba(26, 115, 232, 0.15);
+}
+
+.btn-icon.excluir {
+  color: #ff6b6b;
+}
+
+.btn-icon.excluir:hover {
+  background: rgba(255, 107, 107, 0.15);
 }

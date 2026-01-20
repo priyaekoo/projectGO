@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../../services/api";
 import "./usuarios.css";
+import { FiEdit, FiTrash2 } from "react-icons/fi";
 
 const ITENS_POR_PAGINA = 10;
 
@@ -11,7 +12,6 @@ function Usuarios() {
   const [erro, setErro] = useState("");
   const [modalAberto, setModalAberto] = useState(false);
 
-  // filtro por seletor (tipo + valor)
   const [tipoFiltro, setTipoFiltro] = useState("");
   const [valorFiltro, setValorFiltro] = useState("");
 
@@ -22,11 +22,8 @@ function Usuarios() {
     if (digits.length <= 6) return digits.replace(/(\d{3})(\d+)/, "$1.$2");
     if (digits.length <= 9)
       return digits.replace(/(\d{3})(\d{3})(\d+)/, "$1.$2.$3");
-    return digits.replace(
-      /(\d{3})(\d{3})(\d{3})(\d{0,2})/,
-      function (_, a, b, c, d) {
-        return d ? `${a}.${b}.${c}-${d}` : `${a}.${b}.${c}`;
-      }
+    return digits.replace(/(\d{3})(\d{3})(\d{3})(\d{0,2})/, (_, a, b, c, d) =>
+      d ? `${a}.${b}.${c}-${d}` : `${a}.${b}.${c}`,
     );
   }
 
@@ -41,13 +38,9 @@ function Usuarios() {
   }
 
   function handleValorFiltroChange(e) {
-    if (tipoFiltro === "cpf") {
-      const digits = unformatCpf(e.target.value);
-      setValorFiltro(digits);
-    } else {
-      setValorFiltro(e.target.value);
-    }
-
+    setValorFiltro(
+      tipoFiltro === "cpf" ? unformatCpf(e.target.value) : e.target.value,
+    );
     setPaginaAtual(1);
   }
 
@@ -73,108 +66,50 @@ function Usuarios() {
 
   function handleChange(e) {
     const { name, value } = e.target;
-
-    if (name === "cpf") {
-      // armazena apenas dígitos
-      setForm({
-        ...form,
-        cpf: unformatCpf(value),
-      });
-    } else {
-      setForm({
-        ...form,
-        [name]: value,
-      });
-    }
-  }
-
-  function isValidCPFFront(value) {
-    if (!value) return false;
-    const digits = String(value).replace(/\D/g, "");
-    if (digits.length !== 11) return false;
-    if (/^(\d)\1{10}$/.test(digits)) return false;
-
-    const calcCheckDigit = (arr) => {
-      let sum = 0;
-      for (let i = 0; i < arr.length; i++) {
-        sum += Number(arr[i]) * (arr.length + 1 - i);
-      }
-      const mod = (sum * 10) % 11;
-      return mod === 10 ? 0 : mod;
-    };
-
-    const numbers = digits.split("");
-    const dv1 = calcCheckDigit(numbers.slice(0, 9));
-    const dv2 = calcCheckDigit(numbers.slice(0, 9).concat(String(dv1)));
-
-    return dv1 === Number(numbers[9]) && dv2 === Number(numbers[10]);
+    setForm({
+      ...form,
+      [name]: name === "cpf" ? unformatCpf(value) : value,
+    });
   }
 
   async function handleSubmit(e) {
     e.preventDefault();
-
-    // limpar mensagens anteriores
     setErro("");
     setMensagem("");
-
-    // validação client-side de CPF
-    if (!isValidCPFFront(form.cpf)) {
-      setErro("CPF inválido");
-      return;
-    }
 
     try {
       await api.post("/usuarios", form);
       setMensagem("Usuário cadastrado com sucesso!");
-      setErro("");
       setModalAberto(false);
-      setForm({
-        nome_completo: "",
-        email: "",
-        cpf: "",
-        senha: "",
-      });
+      setForm({ nome_completo: "", email: "", cpf: "", senha: "" });
       carregarUsuarios();
     } catch (error) {
-      const msg = error?.response?.data?.erro || "Erro ao cadastrar usuário.";
-      setErro(msg);
-      setMensagem("");
+      setErro(error?.response?.data?.erro || "Erro ao cadastrar usuário.");
     }
   }
 
   const excluirUsuario = async (id) => {
-    if (!window.confirm("Deseja excluir este usuário?")) return;
+    if (!window.confirm("Deseja inativar este usuário?")) return;
 
     try {
       await api.delete(`/usuarios/${id}`);
-      setMensagem("Usuário excluído com sucesso!");
-      setErro("");
       carregarUsuarios();
     } catch {
-      setErro("Erro ao excluir usuário.");
+      setErro("Erro ao inativar usuário.");
     }
   };
 
   const usuariosFiltrados = usuarios.filter((u) => {
     if (!tipoFiltro) return true;
+    const valor = valorFiltro.toLowerCase();
 
-    const valor = (valorFiltro || "").toString().trim().toLowerCase();
+    if (tipoFiltro === "nome")
+      return u.nome_completo?.toLowerCase().includes(valor);
 
-    if (tipoFiltro === "nome") {
-      return (
-        !valor ||
-        (u.nome_completo && u.nome_completo.toLowerCase().includes(valor))
-      );
-    }
+    if (tipoFiltro === "email") return u.email?.toLowerCase().includes(valor);
 
-    if (tipoFiltro === "email") {
-      return !valor || (u.email && u.email.toLowerCase().includes(valor));
-    }
-
-    if (tipoFiltro === "cpf") {
-      const cpfUser = (u.cpf || "").replace(/\D/g, "");
-      return !valor || cpfUser.includes((valor || "").replace(/\D/g, ""));
-    }
+    if (tipoFiltro === "cpf")
+      return u.cpf?.replace(/\D/g, "").includes(valorFiltro);
 
     return true;
   });
@@ -183,25 +118,20 @@ function Usuarios() {
   const inicio = (paginaAtual - 1) * ITENS_POR_PAGINA;
   const usuariosPaginados = usuariosFiltrados.slice(
     inicio,
-    inicio + ITENS_POR_PAGINA
+    inicio + ITENS_POR_PAGINA,
   );
 
   return (
     <div className="usuarios-container">
       <div className="usuarios-header">
         <h1>Usuários</h1>
-
         <button className="btn-adicionar" onClick={() => setModalAberto(true)}>
           + Adicionar usuário
         </button>
       </div>
 
       <div className="usuarios-filtros">
-        <select
-          name="tipoFiltro"
-          value={tipoFiltro}
-          onChange={handleTipoFiltroChange}
-        >
+        <select value={tipoFiltro} onChange={handleTipoFiltroChange}>
           <option value="">Selecione o filtro</option>
           <option value="nome">Nome</option>
           <option value="email">E-mail</option>
@@ -211,24 +141,20 @@ function Usuarios() {
         {tipoFiltro && (
           <>
             <input
-              type="text"
-              name="valorFiltro"
               placeholder={
                 tipoFiltro === "cpf"
                   ? "Digite o CPF"
                   : tipoFiltro === "email"
-                  ? "Digite o e-mail"
-                  : "Digite o nome"
+                    ? "Digite o e-mail"
+                    : "Digite o nome"
               }
               value={
                 tipoFiltro === "cpf" ? formatCpf(valorFiltro) : valorFiltro
               }
               onChange={handleValorFiltroChange}
             />
-
             <button
               className="btn-limpar"
-              type="button"
               onClick={() => {
                 setTipoFiltro("");
                 setValorFiltro("");
@@ -249,6 +175,7 @@ function Usuarios() {
             <th>Nome</th>
             <th>Email</th>
             <th>CPF</th>
+            <th>Status</th>
             <th>Ações</th>
           </tr>
         </thead>
@@ -256,7 +183,7 @@ function Usuarios() {
         <tbody>
           {usuariosPaginados.length === 0 ? (
             <tr>
-              <td colSpan="4">Nenhum usuário encontrado</td>
+              <td colSpan="5">Nenhum usuário encontrado</td>
             </tr>
           ) : (
             usuariosPaginados.map((usuario) => (
@@ -264,13 +191,30 @@ function Usuarios() {
                 <td data-label="Nome">{usuario.nome_completo}</td>
                 <td data-label="Email">{usuario.email}</td>
                 <td data-label="CPF">{formatCpf(usuario.cpf)}</td>
+                <td data-label="Status">
+                  <span
+                    className={
+                      usuario.ativo ? "status-ativo" : "status-inativo"
+                    }
+                  >
+                    {usuario.ativo ? "Ativo" : "Inativo"}
+                  </span>
+                </td>
                 <td className="acoes" data-label="Ações">
-                  <button className="btn-acao editar">Editar</button>
                   <button
-                    className="btn-acao excluir"
+                    className="btn-icon editar"
+                    title="Editar usuário"
+                    onClick={() => console.log("Editar", usuario.id)}
+                  >
+                    <FiEdit size={18} />
+                  </button>
+
+                  <button
+                    className="btn-icon excluir"
+                    title="Inativar usuário"
                     onClick={() => excluirUsuario(usuario.id)}
                   >
-                    Excluir
+                    <FiTrash2 size={18} />
                   </button>
                 </td>
               </tr>
@@ -281,61 +225,52 @@ function Usuarios() {
 
       {totalPaginas > 1 && (
         <div className="paginacao">
-          {Array.from({ length: totalPaginas }).map((_, index) => (
+          {Array.from({ length: totalPaginas }).map((_, i) => (
             <button
-              key={index}
-              className={paginaAtual === index + 1 ? "ativo" : ""}
-              onClick={() => setPaginaAtual(index + 1)}
+              key={i}
+              className={paginaAtual === i + 1 ? "ativo" : ""}
+              onClick={() => setPaginaAtual(i + 1)}
             >
-              {index + 1}
+              {i + 1}
             </button>
           ))}
         </div>
       )}
 
-      {/* MODAL */}
       {modalAberto && (
         <div className="modal-overlay">
           <div className="modal">
             <h2>Novo Usuário</h2>
-
             <form onSubmit={handleSubmit} className="form">
               <input
-                type="text"
                 name="nome_completo"
                 placeholder="Nome completo"
                 value={form.nome_completo}
                 onChange={handleChange}
                 required
               />
-
               <input
-                type="email"
                 name="email"
                 placeholder="Email"
                 value={form.email}
                 onChange={handleChange}
                 required
               />
-
               <input
-                type="text"
                 name="cpf"
                 placeholder="CPF"
                 value={formatCpf(form.cpf)}
                 onChange={handleChange}
                 required
               />
-
               <input
-                type="password"
                 name="senha"
+                type="password"
                 placeholder="Senha"
                 value={form.senha}
                 onChange={handleChange}
                 required
               />
-
               <div className="acoes">
                 <button type="button" onClick={() => setModalAberto(false)}>
                   Cancelar

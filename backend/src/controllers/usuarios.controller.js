@@ -20,7 +20,7 @@ exports.criar = async (req, res) => {
       `INSERT INTO usuarios (nome_completo, email, cpf, senha)
        VALUES ($1, $2, $3, $4)
        RETURNING id, nome_completo, email, cpf, ativo`,
-      [nome_completo, email, cpf, senhaHash]
+      [nome_completo, email, cpf, senhaHash],
     );
 
     return res.status(201).json(result.rows[0]);
@@ -43,18 +43,25 @@ exports.criar = async (req, res) => {
  */
 exports.consultar = async (req, res) => {
   try {
-    const result = await pool.query(
-      `SELECT id, nome_completo, email, cpf
-       FROM usuarios
-       WHERE ativo = true`
-    );
+    const result = await pool.query(`
+      SELECT 
+        id,
+        nome_completo,
+        email,
+        cpf,
+        ativo,
+        criado_em
+      FROM usuarios
+      ORDER BY nome_completo
+    `);
 
     return res.json(result.rows);
   } catch (error) {
-    return res.status(500).json({ erro: error.message });
+    return res.status(500).json({
+      erro: "Erro ao consultar usuários",
+    });
   }
 };
-
 /**
  * Atualizar usuário
  */
@@ -70,7 +77,7 @@ exports.atualizar = async (req, res) => {
        WHERE id = $3
          AND ativo = true
        RETURNING id, nome_completo, email`,
-      [nome_completo, email, id]
+      [nome_completo, email, id],
     );
 
     if (result.rowCount === 0) {
@@ -104,7 +111,7 @@ exports.deletar = async (req, res) => {
       `UPDATE usuarios
        SET ativo = false
        WHERE id = $1`,
-      [id]
+      [id],
     );
 
     if (result.rowCount === 0) {
@@ -114,5 +121,29 @@ exports.deletar = async (req, res) => {
     return res.json({ mensagem: "Usuário inativado com sucesso" });
   } catch (error) {
     return res.status(500).json({ erro: error.message });
+  }
+};
+
+// rota de consulta por ID
+exports.consultarPorId = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const result = await pool.query(
+      `SELECT id, nome_completo, email, cpf, ativo
+       FROM usuarios
+       WHERE id = $1
+         AND ativo = true`,
+      [id],
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ erro: "Usuário não encontrado" });
+    }
+
+    return res.status(200).json(result.rows[0]);
+  } catch (error) {
+    console.error(error); // 👈 importante
+    return res.status(500).json({ erro: "Erro ao consultar usuário" });
   }
 };
