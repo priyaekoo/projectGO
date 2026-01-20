@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../../services/api";
 import "./usuarios.css";
-import { FiEdit, FiTrash2 } from "react-icons/fi";
+import { FiEdit, FiTrash2, FiRotateCcw } from "react-icons/fi";
 
 const ITENS_POR_PAGINA = 10;
 
@@ -12,9 +12,25 @@ function Usuarios() {
   const [erro, setErro] = useState("");
   const [modalAberto, setModalAberto] = useState(false);
 
+  // 🔹 Modais
+  const [modalInativarAberto, setModalInativarAberto] = useState(false);
+  const [modalReativarAberto, setModalReativarAberto] = useState(false);
+  const [usuarioSelecionado, setUsuarioSelecionado] = useState(null);
+
+  // 🔹 Filtro
   const [tipoFiltro, setTipoFiltro] = useState("");
   const [valorFiltro, setValorFiltro] = useState("");
 
+  const [form, setForm] = useState({
+    nome_completo: "",
+    email: "",
+    cpf: "",
+    senha: "",
+  });
+
+  /* ======================
+     UTILIDADES
+  ====================== */
   function formatCpf(value) {
     if (!value) return "";
     const digits = String(value).replace(/\D/g, "").slice(0, 11);
@@ -31,26 +47,9 @@ function Usuarios() {
     return value ? String(value).replace(/\D/g, "") : "";
   }
 
-  function handleTipoFiltroChange(e) {
-    setTipoFiltro(e.target.value);
-    setValorFiltro("");
-    setPaginaAtual(1);
-  }
-
-  function handleValorFiltroChange(e) {
-    setValorFiltro(
-      tipoFiltro === "cpf" ? unformatCpf(e.target.value) : e.target.value,
-    );
-    setPaginaAtual(1);
-  }
-
-  const [form, setForm] = useState({
-    nome_completo: "",
-    email: "",
-    cpf: "",
-    senha: "",
-  });
-
+  /* ======================
+     API
+  ====================== */
   const carregarUsuarios = async () => {
     try {
       const response = await api.get("/usuarios");
@@ -63,14 +62,6 @@ function Usuarios() {
   useEffect(() => {
     carregarUsuarios();
   }, []);
-
-  function handleChange(e) {
-    const { name, value } = e.target;
-    setForm({
-      ...form,
-      [name]: name === "cpf" ? unformatCpf(value) : value,
-    });
-  }
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -88,39 +79,84 @@ function Usuarios() {
     }
   }
 
-  const excluirUsuario = async (id) => {
-    if (!window.confirm("Deseja inativar este usuário?")) return;
+  const confirmarInativacao = async () => {
+    if (!usuarioSelecionado) return;
 
     try {
-      await api.delete(`/usuarios/${id}`);
+      await api.delete(`/usuarios/${usuarioSelecionado.id}`);
+      setModalInativarAberto(false);
+      setUsuarioSelecionado(null);
       carregarUsuarios();
     } catch {
       setErro("Erro ao inativar usuário.");
     }
   };
 
+  const confirmarReativacao = async () => {
+    if (!usuarioSelecionado) return;
+
+    try {
+      await api.patch(`/usuarios/${usuarioSelecionado.id}/reativar`);
+      setModalReativarAberto(false);
+      setUsuarioSelecionado(null);
+      carregarUsuarios();
+    } catch {
+      setErro("Erro ao reativar usuário.");
+    }
+  };
+
+  /* ======================
+     FILTRO
+  ====================== */
+  const handleTipoFiltroChange = (e) => {
+    setTipoFiltro(e.target.value);
+    setValorFiltro("");
+    setPaginaAtual(1);
+  };
+
+  const handleValorFiltroChange = (e) => {
+    const value =
+      tipoFiltro === "cpf" ? unformatCpf(e.target.value) : e.target.value;
+
+    setValorFiltro(value);
+    setPaginaAtual(1);
+  };
+
   const usuariosFiltrados = usuarios.filter((u) => {
-    if (!tipoFiltro) return true;
+    if (!tipoFiltro || !valorFiltro) return true;
+
     const valor = valorFiltro.toLowerCase();
 
-    if (tipoFiltro === "nome")
+    if (tipoFiltro === "nome") {
       return u.nome_completo?.toLowerCase().includes(valor);
+    }
 
-    if (tipoFiltro === "email") return u.email?.toLowerCase().includes(valor);
+    if (tipoFiltro === "email") {
+      return u.email?.toLowerCase().includes(valor);
+    }
 
-    if (tipoFiltro === "cpf")
+    if (tipoFiltro === "cpf") {
       return u.cpf?.replace(/\D/g, "").includes(valorFiltro);
+    }
 
     return true;
   });
 
+  /* ======================
+     PAGINAÇÃO
+  ====================== */
   const totalPaginas = Math.ceil(usuariosFiltrados.length / ITENS_POR_PAGINA);
+
   const inicio = (paginaAtual - 1) * ITENS_POR_PAGINA;
+
   const usuariosPaginados = usuariosFiltrados.slice(
     inicio,
     inicio + ITENS_POR_PAGINA,
   );
 
+  /* ======================
+     RENDER
+  ====================== */
   return (
     <div className="usuarios-container">
       <div className="usuarios-header">
@@ -130,6 +166,7 @@ function Usuarios() {
         </button>
       </div>
 
+      {/* FILTROS */}
       <div className="usuarios-filtros">
         <select value={tipoFiltro} onChange={handleTipoFiltroChange}>
           <option value="">Selecione o filtro</option>
@@ -158,6 +195,7 @@ function Usuarios() {
               onClick={() => {
                 setTipoFiltro("");
                 setValorFiltro("");
+                setPaginaAtual(1);
               }}
             >
               Limpar
@@ -166,8 +204,8 @@ function Usuarios() {
         )}
       </div>
 
-      {mensagem && <p className="mensagem-sucesso">{mensagem}</p>}
       {erro && <p className="mensagem-erro">{erro}</p>}
+      {mensagem && <p className="mensagem-sucesso">{mensagem}</p>}
 
       <table className="usuarios-tabela">
         <thead>
@@ -188,10 +226,10 @@ function Usuarios() {
           ) : (
             usuariosPaginados.map((usuario) => (
               <tr key={usuario.id}>
-                <td data-label="Nome">{usuario.nome_completo}</td>
-                <td data-label="Email">{usuario.email}</td>
-                <td data-label="CPF">{formatCpf(usuario.cpf)}</td>
-                <td data-label="Status">
+                <td>{usuario.nome_completo}</td>
+                <td>{usuario.email}</td>
+                <td>{formatCpf(usuario.cpf)}</td>
+                <td>
                   <span
                     className={
                       usuario.ativo ? "status-ativo" : "status-inativo"
@@ -200,22 +238,36 @@ function Usuarios() {
                     {usuario.ativo ? "Ativo" : "Inativo"}
                   </span>
                 </td>
-                <td className="acoes" data-label="Ações">
-                  <button
-                    className="btn-icon editar"
-                    title="Editar usuário"
-                    onClick={() => console.log("Editar", usuario.id)}
-                  >
+                <td className="acoes">
+                  <button className="btn-icon editar" title="Editar">
                     <FiEdit size={18} />
                   </button>
 
-                  <button
-                    className="btn-icon excluir"
-                    title="Inativar usuário"
-                    onClick={() => excluirUsuario(usuario.id)}
-                  >
-                    <FiTrash2 size={18} />
-                  </button>
+                  {usuario.ativo && (
+                    <button
+                      className="btn-icon excluir"
+                      title="Inativar"
+                      onClick={() => {
+                        setUsuarioSelecionado(usuario);
+                        setModalInativarAberto(true);
+                      }}
+                    >
+                      <FiTrash2 size={18} />
+                    </button>
+                  )}
+
+                  {!usuario.ativo && (
+                    <button
+                      className="btn-icon reativar"
+                      title="Reativar"
+                      onClick={() => {
+                        setUsuarioSelecionado(usuario);
+                        setModalReativarAberto(true);
+                      }}
+                    >
+                      <FiRotateCcw size={18} />
+                    </button>
+                  )}
                 </td>
               </tr>
             ))
@@ -237,49 +289,61 @@ function Usuarios() {
         </div>
       )}
 
-      {modalAberto && (
+      {/* MODAL INATIVAR */}
+      {modalInativarAberto && (
         <div className="modal-overlay">
-          <div className="modal">
-            <h2>Novo Usuário</h2>
-            <form onSubmit={handleSubmit} className="form">
-              <input
-                name="nome_completo"
-                placeholder="Nome completo"
-                value={form.nome_completo}
-                onChange={handleChange}
-                required
-              />
-              <input
-                name="email"
-                placeholder="Email"
-                value={form.email}
-                onChange={handleChange}
-                required
-              />
-              <input
-                name="cpf"
-                placeholder="CPF"
-                value={formatCpf(form.cpf)}
-                onChange={handleChange}
-                required
-              />
-              <input
-                name="senha"
-                type="password"
-                placeholder="Senha"
-                value={form.senha}
-                onChange={handleChange}
-                required
-              />
-              <div className="acoes">
-                <button type="button" onClick={() => setModalAberto(false)}>
-                  Cancelar
-                </button>
-                <button type="submit" className="btn-adicionar">
-                  Salvar
-                </button>
-              </div>
-            </form>
+          <div className="modal modal-confirmacao">
+            <h2>Confirmar inativação</h2>
+            <p>
+              Deseja realmente inativar o usuário{" "}
+              <strong>{usuarioSelecionado?.nome_completo}</strong>?
+            </p>
+
+            <div className="acoes-modal">
+              <button
+                className="btn-cancelar"
+                onClick={() => {
+                  setModalInativarAberto(false);
+                  setUsuarioSelecionado(null);
+                }}
+              >
+                Cancelar
+              </button>
+              <button className="btn-confirmar" onClick={confirmarInativacao}>
+                Sim
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL REATIVAR */}
+      {modalReativarAberto && (
+        <div className="modal-overlay">
+          <div className="modal modal-confirmacao">
+            <h2>Confirmar reativação</h2>
+            <p>
+              Deseja realmente reativar o usuário{" "}
+              <strong>{usuarioSelecionado?.nome_completo}</strong>?
+            </p>
+
+            <div className="acoes-modal">
+              <button
+                className="btn-cancelar"
+                onClick={() => {
+                  setModalReativarAberto(false);
+                  setUsuarioSelecionado(null);
+                }}
+              >
+                Cancelar
+              </button>
+              <button
+                className="btn-confirmar reativar"
+                onClick={confirmarReativacao}
+              >
+                Sim
+              </button>
+            </div>
           </div>
         </div>
       )}

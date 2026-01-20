@@ -147,3 +147,26 @@ exports.consultarPorId = async (req, res) => {
     return res.status(500).json({ erro: "Erro ao consultar usuário" });
   }
 };
+/**
+ * Reativar usuário
+ */
+exports.reativar = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const result = await pool.query(
+      `UPDATE usuarios
+       SET ativo = true
+       WHERE id = $1`,
+      [id],
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ erro: "Usuário não encontrado" });
+    }
+
+    return res.json({ mensagem: "Usuário reativado com sucesso" });
+  } catch (error) {
+    return res.status(500).json({ erro: error.message });
+  }
+};

@@ -349,3 +349,68 @@
 .btn-icon.excluir:hover {
   background: rgba(255, 107, 107, 0.15);
 }
+
+/* Reativar */
+.btn-icon.reativar {
+  color: #4caf50;
+}
+
+.btn-icon.reativar:hover {
+  background: rgba(76, 175, 80, 0.15);
+}
+
+/* ================================
+   MODAL CONFIRMAÇÃO
+================================ */
+.modal-confirmacao {
+  max-width: 420px;
+  text-align: center;
+}
+
+.modal-confirmacao p {
+  margin: 20px 0;
+  color: #ddd;
+  font-size: 15px;
+}
+
+.acoes-modal {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.btn-cancelar {
+  background: transparent;
+  border: 1px solid #555;
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.btn-cancelar:hover {
+  background: #2b2b2b;
+}
+
+.btn-confirmar {
+  background: #ff6b6b;
+  border: none;
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.btn-confirmar:hover {
+  background: #ff4d4d;
+}
+
+/* Botão confirmar reativação */
+.btn-confirmar.reativar {
+  background: #4caf50;
+}
+
+.btn-confirmar.reativar:hover {
+  background: #43a047;
+}
