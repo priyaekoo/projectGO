@@ -3,15 +3,15 @@
 ================================ */
 .usuarios-container {
   width: 100%;
-  max-width: none;
   box-sizing: border-box;
   padding-right: 12px;
 }
 
 /* ================================
-   HEADER
+   HEADER / TOPO
 ================================ */
-.usuarios-header {
+.usuarios-header,
+.topo-acoes {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -40,44 +40,7 @@
 }
 
 /* ================================
-   FILTROS
-================================ */
-.usuarios-filtros {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 20px;
-  align-items: center;
-}
-
-.usuarios-filtros select,
-.usuarios-filtros input {
-  background: #1e1e1e;
-  border: 1px solid #333;
-  color: #fff;
-  padding: 10px 12px;
-  border-radius: 8px;
-  font-size: 14px;
-}
-
-.usuarios-filtros select {
-  min-width: 200px;
-}
-
-.usuarios-filtros input {
-  min-width: 240px;
-}
-
-.btn-limpar {
-  background: transparent;
-  color: #fff;
-  border: 1px solid #444;
-  padding: 10px 12px;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-/* ================================
-   MENSAGENS
+   MENSAGENS GLOBAIS
 ================================ */
 .mensagem-sucesso {
   color: #4caf50;
@@ -99,7 +62,6 @@
   border-spacing: 0 12px;
 }
 
-/* HEADER DA TABELA */
 .usuarios-tabela thead th {
   text-align: left;
   font-size: 13px;
@@ -108,7 +70,6 @@
   padding-bottom: 8px;
 }
 
-/* GRID DA TABELA (5 COLUNAS) */
 .usuarios-tabela thead tr,
 .usuarios-tabela tbody tr {
   display: grid;
@@ -116,18 +77,14 @@
   gap: 12px;
 }
 
-/* LINHA */
 .usuarios-tabela tbody tr {
-  width: 100%;
   background: rgba(35, 35, 35, 0.95);
   border-radius: 10px;
   align-items: center;
   padding: 12px;
-  box-sizing: border-box;
 }
 
 .usuarios-tabela tbody td {
-  padding: 0;
   color: #ffffff;
   font-size: 14px;
   overflow: hidden;
@@ -146,6 +103,56 @@
 .status-inativo {
   color: #c62828;
   font-weight: 600;
+}
+
+/* ================================
+   AÇÕES COM ÍCONES
+================================ */
+.acoes {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+}
+
+.btn-icon {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-icon.editar {
+  color: #1a73e8;
+}
+
+.btn-icon.editar:hover {
+  background: rgba(26, 115, 232, 0.15);
+}
+
+.btn-icon.excluir {
+  color: #ff6b6b;
+}
+
+.btn-icon.excluir:hover {
+  background: rgba(255, 107, 107, 0.15);
+}
+
+.btn-icon.reativar {
+  color: #4caf50;
+}
+
+.btn-icon.reativar:hover {
+  background: rgba(76, 175, 80, 0.15);
+}
+
+.btn-icon.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 
 /* ================================
@@ -173,7 +180,7 @@
 }
 
 /* ================================
-   MODAL
+   MODAL (GERAL)
 ================================ */
 .modal-overlay {
   position: fixed;
@@ -210,7 +217,7 @@
   height: 42px;
   padding: 0 12px;
   border-radius: 6px;
-  border: none;
+  border: 1px solid transparent;
   background: #2b2b2b;
   color: #fff;
 }
@@ -219,144 +226,52 @@
   color: #aaa;
 }
 
-.modal .acoes {
-  display: flex;
-  gap: 10px;
-  justify-self: center;
+.modal input:disabled {
+  background: #1a1a1a;
+  color: #777;
+  cursor: not-allowed;
 }
 
 /* ================================
-   RESPONSIVIDADE
+   CAMPO SENHA
 ================================ */
-@media (max-width: 800px) {
-  .usuarios-filtros {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 8px;
-  }
-
-  .usuarios-filtros select,
-  .usuarios-filtros input {
-    width: 100%;
-  }
-
-  .btn-limpar {
-    align-self: flex-end;
-  }
-
-  .usuarios-tabela thead {
-    display: none;
-  }
-
-  .usuarios-tabela tbody tr {
-    grid-template-columns: 1fr;
-    padding: 14px 12px;
-  }
-
-  .usuarios-tabela tbody td {
-    display: flex;
-    justify-content: space-between;
-    padding: 8px 0;
-  }
-
-  .usuarios-tabela tbody td::before {
-    content: attr(data-label) ":";
-    color: #9e9e9e;
-    margin-right: 12px;
-    font-size: 13px;
-    min-width: 70px;
-    white-space: nowrap;
-  }
-}
-/* ================================
-   AÇÕES COM ÍCONES
-================================ */
-.acoes {
+.campo-senha {
+  position: relative;
   display: flex;
-  gap: 10px;
-  justify-self: end;
+  align-items: center;
 }
 
-.btn-icon {
+.campo-senha input {
+  width: 100%;
+  padding-right: 42px;
+}
+
+.campo-senha button {
+  position: absolute;
+  right: 10px;
   background: transparent;
   border: none;
+  color: #aaa;
   cursor: pointer;
-  padding: 6px;
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
-/* Editar */
-.btn-icon.editar {
-  color: #1a73e8;
+.campo-senha button:hover {
+  color: #fff;
 }
 
-.btn-icon.editar:hover {
-  background: rgba(26, 115, 232, 0.15);
-}
-
-/* Inativar */
-.btn-icon.excluir {
-  color: #ff6b6b;
-}
-
-.btn-icon.excluir:hover {
-  background: rgba(255, 107, 107, 0.15);
-}
-/* Centraliza o título da coluna Ações */
-.usuarios-tabela thead th:last-child {
-  text-align: center;
-}
 /* ================================
-   AÇÕES COM ÍCONES
+   ERROS DE VALIDAÇÃO
 ================================ */
-.usuarios-tabela thead th:last-child {
-  text-align: center;
+.input-erro {
+  border: 1px solid #ff6b6b !important;
+  background: rgba(255, 107, 107, 0.08);
 }
 
-.acoes {
-  display: flex;
-  gap: 10px;
-  justify-self: center;
-  align-items: center;
-}
-
-.btn-icon {
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  padding: 6px;
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.btn-icon.editar {
-  color: #1a73e8;
-}
-
-.btn-icon.editar:hover {
-  background: rgba(26, 115, 232, 0.15);
-}
-
-.btn-icon.excluir {
+.erro-campo {
   color: #ff6b6b;
-}
-
-.btn-icon.excluir:hover {
-  background: rgba(255, 107, 107, 0.15);
-}
-
-/* Reativar */
-.btn-icon.reativar {
-  color: #4caf50;
-}
-
-.btn-icon.reativar:hover {
-  background: rgba(76, 175, 80, 0.15);
+  font-size: 12px;
+  margin-top: -8px;
+  margin-bottom: 4px;
 }
 
 /* ================================
@@ -406,11 +321,38 @@
   background: #ff4d4d;
 }
 
-/* Botão confirmar reativação */
 .btn-confirmar.reativar {
   background: #4caf50;
 }
 
 .btn-confirmar.reativar:hover {
   background: #43a047;
+}
+
+/* ================================
+   RESPONSIVIDADE
+================================ */
+@media (max-width: 800px) {
+  .usuarios-tabela thead {
+    display: none;
+  }
+
+  .usuarios-tabela tbody tr {
+    grid-template-columns: 1fr;
+    padding: 14px 12px;
+  }
+
+  .usuarios-tabela tbody td {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+  }
+
+  .usuarios-tabela tbody td::before {
+    content: attr(data-label) ":";
+    color: #9e9e9e;
+    margin-right: 12px;
+    font-size: 13px;
+    min-width: 70px;
+  }
 }

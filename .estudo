@@ -32,12 +32,18 @@ Para estudos
 ✔️ Formatar dados
 
 
-consultas de banco de dados no pgADM
+👉 consultas de banco de dados no pgADM
 
 SELECT id, nome_completo
 FROM pacientes
 WHERE ativo = true
 ORDER BY nome_completo;
+
+Por um usuario especifico 
+
+SELECT id, nome_completo, cpf
+FROM usuarios
+WHERE nome_completo = 'Pedrita Silva';
 
 
 🧰  REGRA DE OURO PARA QUEM FAZ AUTOMAÇÃO E DEPENDE DE CPF E CNPJ VÁLIDOS.
@@ -76,3 +82,46 @@ Email - faker.internet.email();
 Texto - faker.lorem.sentence();
 
 
+BANCO DE DADOS - LIMPEZA DOS REGISTROS.
+01. -> 👉Apagar todos os usuários, mantendo a tabela, COMANDO:
+
+DELETE FROM usuarios;
+
+Sua função:
+✔ Remove todos os registros
+✔ Mantém estrutura, colunas, constraints
+⚠ Não reseta o ID (serial)
+
+02. -> 👉 Ideal para ambiente de estudo / testes, COMANDO:
+
+TRUNCATE TABLE usuarios RESTART IDENTITY CASCADE;
+
+Sua função:
+✔ Apaga tudo
+✔ ID volta para 1
+✔ Mais rápido que DELETE
+
+
+🟡 OPÇÃO 3 — Limpar apenas usuários inativos
+
+DELETE FROM usuarios
+WHERE ativo = false;
+
+✔ Muito usada quando existe soft delete
+
+
+🟣 OPÇÃO 4 — Voltar todos para ativos
+
+UPDATE usuarios
+SET ativo = true;
+
+
+🔴 OPÇÃO 5 — Apagar um usuário específico
+
+DELETE FROM usuarios
+WHERE id = 13;
+ 
+ ou por CPF:
+
+ DELETE FROM usuarios
+WHERE cpf = '99087866543';

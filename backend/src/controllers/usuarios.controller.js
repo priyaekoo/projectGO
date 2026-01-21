@@ -67,21 +67,29 @@ exports.consultar = async (req, res) => {
  */
 exports.atualizar = async (req, res) => {
   const { id } = req.params;
-  const { nome_completo, email } = req.body;
+  const { nome_completo, email, cpf } = req.body;
+
+  // Validação de CPF
+  if (!isValidCPF(cpf)) {
+    return res.status(400).json({ erro: "CPF inválido" });
+  }
 
   try {
     const result = await pool.query(
       `UPDATE usuarios
        SET nome_completo = $1,
-           email = $2
-       WHERE id = $3
+           email = $2,
+           cpf = $3
+       WHERE id = $4
          AND ativo = true
-       RETURNING id, nome_completo, email`,
-      [nome_completo, email, id],
+       RETURNING id, nome_completo, email, cpf, ativo, criado_em`,
+      [nome_completo, email, cpf, id],
     );
 
     if (result.rowCount === 0) {
-      return res.status(404).json({ erro: "Usuário não encontrado" });
+      return res.status(400).json({
+        erro: "Usuário inativo não pode ser editado",
+      });
     }
 
     return res.status(200).json({
@@ -89,14 +97,11 @@ exports.atualizar = async (req, res) => {
       usuario: result.rows[0],
     });
   } catch (error) {
-    // email duplicado
     if (error.code === "23505") {
-      return res.status(400).json({
-        erro: "E-mail já cadastrado",
-      });
+      return res.status(400).json({ erro: "E-mail já cadastrado" });
     }
 
-    return res.status(500).json({ erro: error.message });
+    return res.status(500).json({ erro: "Erro ao atualizar usuário" });
   }
 };
 
