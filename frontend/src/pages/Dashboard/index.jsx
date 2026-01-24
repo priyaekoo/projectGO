@@ -12,7 +12,9 @@ function Dashboard() {
   };
 
   // rotas que precisam ocupar mais largura
-  const isWidePage = location.pathname.includes("/usuarios");
+  const isWidePage =
+    location.pathname.includes("/usuarios") ||
+    location.pathname.includes("/clientes");
 
   return (
     <div className="dashboard-container">
@@ -20,7 +22,12 @@ function Dashboard() {
         <h3>MENU</h3>
 
         <button onClick={() => navigate("usuarios")}>Usuários</button>
+
+        {/* 🔹 NOVO ITEM */}
+        <button onClick={() => navigate("clientes")}>Clientes</button>
+
         <button onClick={() => navigate("pacientes")}>Pacientes</button>
+
         <button onClick={() => navigate("especialidades")}>
           Especialidades
         </button>

@@ -4,6 +4,7 @@ import Dashboard from "../pages/Dashboard";
 import HomeDashboard from "../pages/Dashboard/Home";
 import Usuarios from "../pages/Usuarios";
 import UsuarioForm from "../pages/Usuarios/UsuarioForm";
+import Clientes from "../pages/Clientes";
 import PrivateRoute from "./PrivateRoute";
 
 function AppRoutes() {
@@ -25,6 +26,7 @@ function AppRoutes() {
           <Route index element={<HomeDashboard />} />
           <Route path="usuarios" element={<Usuarios />} />
           <Route path="usuarios/novo" element={<UsuarioForm />} />
+          <Route path="clientes" element={<Clientes />} />
         </Route>
       </Routes>
     </BrowserRouter>

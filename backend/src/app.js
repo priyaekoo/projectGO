@@ -23,4 +23,11 @@ app.get("/db-test", async (req, res) => {
   res.json(result.rows[0]);
 });
 
+const contasReceberRoutes = require("./routes/contasReceber.routes");
+
+app.use("/contas-receber", contasReceberRoutes);
+const clientesRoutes = require("./routes/clientes.routes");
+
+app.use("/clientes", clientesRoutes);
+
 module.exports = app;
