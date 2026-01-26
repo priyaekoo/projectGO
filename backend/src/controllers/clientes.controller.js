@@ -7,10 +7,6 @@ const { cpf, cnpj } = require("cpf-cnpj-validator");
 exports.criar = async (req, res) => {
   const { nome_completo, email, cpf_cnpj, observacao } = req.body;
 
-  if (!cpf_cnpj) {
-    return res.status(400).json({ erro: "CPF ou CNPJ é obrigatório" });
-  }
-
   if (!cpf.isValid(cpf_cnpj) && !cnpj.isValid(cpf_cnpj)) {
     return res.status(400).json({ erro: "CPF ou CNPJ inválido" });
   }
@@ -20,21 +16,13 @@ exports.criar = async (req, res) => {
       `INSERT INTO clientes
        (nome_completo, email, cpf_cnpj, observacao)
        VALUES ($1, $2, $3, $4)
-       RETURNING id, nome_completo, email, cpf_cnpj, observacao, ativo, criado_em`,
+       RETURNING *`,
       [nome_completo, email, cpf_cnpj, observacao],
     );
 
-    return res.status(201).json(result.rows[0]);
+    res.status(201).json(result.rows[0]);
   } catch (error) {
-    if (error.code === "23505") {
-      return res.status(400).json({
-        erro: "CPF ou CNPJ já cadastrado",
-      });
-    }
-
-    return res.status(500).json({
-      erro: "Erro ao criar cliente",
-    });
+    res.status(500).json({ erro: "Erro ao criar cliente" });
   }
 };
 
@@ -42,171 +30,137 @@ exports.criar = async (req, res) => {
  * Listar clientes
  */
 exports.listar = async (req, res) => {
-  try {
-    const result = await pool.query(`
-      SELECT
-        id,
-        nome_completo,
-        email,
-        cpf_cnpj,
-        observacao,
-        ativo,
-        criado_em
-      FROM clientes
-      ORDER BY nome_completo
-    `);
-
-    return res.json(result.rows);
-  } catch (error) {
-    return res.status(500).json({
-      erro: "Erro ao listar clientes",
-    });
-  }
+  const result = await pool.query(
+    "SELECT * FROM clientes ORDER BY nome_completo",
+  );
+  res.json(result.rows);
 };
 
 /**
- * Atualizar cliente (PATCH)
+ * Atualizar cliente
  */
 exports.atualizar = async (req, res) => {
   const { id } = req.params;
-  const { nome_completo, email, cpf_cnpj, observacao, ...rest } = req.body;
+  const { nome_completo, email, observacao } = req.body;
 
-  // Bloqueia campos não permitidos
-  if (Object.keys(rest).length > 0) {
-    return res.status(400).json({
-      erro: "Campo não permitido para atualização",
-    });
-  }
+  const result = await pool.query(
+    `UPDATE clientes
+     SET nome_completo = $1, email = $2, observacao = $3
+     WHERE id = $4
+     RETURNING *`,
+    [nome_completo, email, observacao, id],
+  );
 
-  try {
-    const cliente = await pool.query(
-      `SELECT ativo FROM clientes WHERE id = $1`,
-      [id],
-    );
-
-    if (cliente.rowCount === 0) {
-      return res.status(404).json({
-        erro: "Cliente não encontrado",
-      });
-    }
-
-    if (!cliente.rows[0].ativo) {
-      return res.status(400).json({
-        erro: "Cliente inativo não pode ser alterado",
-      });
-    }
-
-    // Valida CPF/CNPJ somente se enviado
-    if (cpf_cnpj) {
-      if (!cpf.isValid(cpf_cnpj) && !cnpj.isValid(cpf_cnpj)) {
-        return res.status(400).json({ erro: "CPF ou CNPJ inválido" });
-      }
-    }
-
-    const campos = [];
-    const valores = [];
-    let index = 1;
-
-    if (nome_completo) {
-      campos.push(`nome_completo = $${index++}`);
-      valores.push(nome_completo);
-    }
-
-    if (email) {
-      campos.push(`email = $${index++}`);
-      valores.push(email);
-    }
-
-    if (cpf_cnpj) {
-      campos.push(`cpf_cnpj = $${index++}`);
-      valores.push(cpf_cnpj);
-    }
-
-    if (observacao) {
-      campos.push(`observacao = $${index++}`);
-      valores.push(observacao);
-    }
-
-    if (campos.length === 0) {
-      return res.status(400).json({
-        erro: "Nenhum campo válido enviado para atualização",
-      });
-    }
-
-    valores.push(id);
-
-    const result = await pool.query(
-      `UPDATE clientes
-       SET ${campos.join(", ")}
-       WHERE id = $${index}
-       RETURNING id, nome_completo, email, cpf_cnpj, observacao, ativo, criado_em`,
-      valores,
-    );
-
-    return res.json(result.rows[0]);
-  } catch (error) {
-    return res.status(500).json({
-      erro: "Erro ao atualizar cliente",
-    });
-  }
+  res.json(result.rows[0]);
 };
 
 /**
- * Inativar cliente (soft delete)
+ * Inativar cliente
  */
 exports.inativar = async (req, res) => {
-  const { id } = req.params;
-
-  try {
-    const result = await pool.query(
-      `UPDATE clientes
-       SET ativo = false
-       WHERE id = $1`,
-      [id],
-    );
-
-    if (result.rowCount === 0) {
-      return res.status(404).json({
-        erro: "Cliente não encontrado",
-      });
-    }
-
-    return res.json({
-      mensagem: "Cliente inativado com sucesso",
-    });
-  } catch (error) {
-    return res.status(500).json({
-      erro: "Erro ao inativar cliente",
-    });
-  }
+  await pool.query("UPDATE clientes SET ativo = false WHERE id = $1", [
+    req.params.id,
+  ]);
+  res.json({ mensagem: "Cliente inativado" });
 };
 
 /**
  * Reativar cliente
  */
 exports.reativar = async (req, res) => {
+  await pool.query("UPDATE clientes SET ativo = true WHERE id = $1", [
+    req.params.id,
+  ]);
+  res.json({ mensagem: "Cliente reativado" });
+};
+
+/**
+ * 💰 CONSULTAR SALDO
+ */
+exports.consultarSaldo = async (req, res) => {
+  const { id } = req.params;
+
+  const result = await pool.query(
+    `
+    SELECT
+      cl.id,
+      cl.nome_completo,
+      cl.saldo_inicial +
+      COALESCE(SUM(
+        CASE
+          WHEN m.tipo = 'ENTRADA' THEN m.valor
+          WHEN m.tipo = 'SAIDA' THEN -m.valor
+        END
+      ), 0) AS saldo_atual
+    FROM clientes cl
+    LEFT JOIN movimentacoes m ON m.id_cliente = cl.id
+    WHERE cl.id = $1
+    GROUP BY cl.id
+    `,
+    [id],
+  );
+
+  res.json(result.rows[0]);
+};
+
+/**
+ * 📄 EXTRATO (ordenado por data)
+ */
+exports.extrato = async (req, res) => {
+  const { id } = req.params;
+
+  const result = await pool.query(
+    `
+    SELECT
+      tipo,
+      valor,
+      origem,
+      descricao,
+      data_movimentacao
+    FROM movimentacoes
+    WHERE id_cliente = $1
+    ORDER BY data_movimentacao DESC
+    `,
+    [id],
+  );
+
+  res.json(result.rows);
+};
+
+exports.consultarSaldo = async (req, res) => {
   const { id } = req.params;
 
   try {
     const result = await pool.query(
-      `UPDATE clientes
-       SET ativo = true
-       WHERE id = $1`,
+      `
+      SELECT
+        cl.id,
+        cl.nome_completo,
+        cl.saldo_inicial,
+        cl.saldo_inicial +
+        COALESCE(SUM(
+          CASE
+            WHEN m.tipo = 'ENTRADA' THEN m.valor
+            WHEN m.tipo = 'SAIDA' THEN -m.valor
+          END
+        ), 0) AS saldo_atual
+      FROM clientes cl
+      LEFT JOIN movimentacoes m ON m.id_cliente = cl.id
+      WHERE cl.id = $1
+      GROUP BY cl.id
+      `,
       [id],
     );
 
     if (result.rowCount === 0) {
-      return res.status(404).json({
-        erro: "Cliente não encontrado",
-      });
+      return res.status(404).json({ erro: "Cliente não encontrado" });
     }
 
-    return res.json({
-      mensagem: "Cliente reativado com sucesso",
-    });
+    return res.json(result.rows[0]);
   } catch (error) {
     return res.status(500).json({
-      erro: "Erro ao reativar cliente",
+      erro: "Erro ao consultar saldo",
+      detalhe: error.message,
     });
   }
 };

@@ -1,10 +1,15 @@
 const express = require("express");
 const router = express.Router();
-const controller = require("../controllers/contasReceber.controller");
 
-router.post("/", controller.criar);
-router.post("/:id/pagar", controller.pagar);
-router.post("/:id/cancelar", controller.cancelar);
-router.get("/", controller.listar);
+const contasReceberController = require("../controllers/contasReceber.controller");
+
+// criar conta
+router.post("/", contasReceberController.criar);
+
+// listar contas
+router.get("/", contasReceberController.listar);
+
+// pagar conta
+router.patch("/:id/pagar", contasReceberController.pagar);
 
 module.exports = router;

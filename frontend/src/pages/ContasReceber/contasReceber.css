@@ -1,0 +1,113 @@
+/* ================================
+   GRID CONTAS A RECEBER
+================================ */
+
+.usuarios-tabela {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: separate;
+  border-spacing: 0 12px;
+}
+
+/* Cabeçalho e linhas usam A MESMA GRID */
+.usuarios-tabela thead tr,
+.usuarios-tabela tbody tr {
+  display: grid;
+  grid-template-columns:
+    3fr /* Cliente */
+    3fr /* Descrição */
+    1.5fr /* Valor */
+    1.5fr /* Vencimento */
+    1fr /* Status */
+    1.2fr; /* Ações */
+  gap: 12px;
+}
+
+/* ================================
+   HEADER
+================================ */
+
+.usuarios-tabela thead th {
+  text-align: left;
+  font-size: 13px;
+  font-weight: 500;
+  color: #9e9e9e;
+  padding-bottom: 8px;
+}
+
+/* ================================
+   LINHAS
+================================ */
+
+.usuarios-tabela tbody tr {
+  background: rgba(35, 35, 35, 0.95);
+  border-radius: 10px;
+  align-items: center;
+  padding: 12px;
+}
+
+.usuarios-tabela tbody td {
+  color: #ffffff;
+  font-size: 14px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ================================
+   STATUS
+================================ */
+
+.status-pendente {
+  color: #f9a825;
+  font-weight: 600;
+}
+
+.status-paga {
+  color: #2e7d32;
+  font-weight: 600;
+}
+
+.status-cancelada {
+  color: #c62828;
+  font-weight: 600;
+}
+
+/* ================================
+   AÇÕES
+================================ */
+
+.usuarios-tabela .acoes {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+}
+
+/* ================================
+   RESPONSIVO
+================================ */
+
+@media (max-width: 900px) {
+  .usuarios-tabela thead {
+    display: none;
+  }
+
+  .usuarios-tabela tbody tr {
+    grid-template-columns: 1fr;
+    padding: 14px 12px;
+  }
+
+  .usuarios-tabela tbody td {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+  }
+
+  .usuarios-tabela tbody td::before {
+    content: attr(data-label) ":";
+    color: #9e9e9e;
+    font-size: 13px;
+    margin-right: 12px;
+  }
+}

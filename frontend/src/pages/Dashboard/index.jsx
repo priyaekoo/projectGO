@@ -11,10 +11,11 @@ function Dashboard() {
     navigate("/login");
   };
 
-  // rotas que precisam ocupar mais largura
+  // Rotas que precisam ocupar mais largura
   const isWidePage =
     location.pathname.includes("/usuarios") ||
-    location.pathname.includes("/clientes");
+    location.pathname.includes("/clientes") ||
+    location.pathname.includes("/contas-receber");
 
   return (
     <div className="dashboard-container">
@@ -23,14 +24,13 @@ function Dashboard() {
 
         <button onClick={() => navigate("usuarios")}>Usuários</button>
 
-        {/* 🔹 NOVO ITEM */}
         <button onClick={() => navigate("clientes")}>Clientes</button>
 
-        <button onClick={() => navigate("pacientes")}>Pacientes</button>
-
-        <button onClick={() => navigate("especialidades")}>
-          Especialidades
+        <button onClick={() => navigate("contas-receber")}>
+          Contas a Receber
         </button>
+
+        <button onClick={() => navigate("depositos")}>Depósitos</button>
 
         <button className="logout" onClick={logout}>
           Sair
