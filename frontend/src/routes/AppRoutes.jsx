@@ -7,6 +7,7 @@ import Clientes from "../pages/Clientes";
 import ContasReceber from "../pages/ContasReceber";
 import Depositos from "../pages/Depositos";
 import PrivateRoute from "./PrivateRoute";
+import ContasPagar from "../pages/ContasPagar";
 
 function AppRoutes() {
   return (
@@ -28,6 +29,7 @@ function AppRoutes() {
           <Route path="clientes" element={<Clientes />} />
           <Route path="contas-receber" element={<ContasReceber />} />
           <Route path="depositos" element={<Depositos />} />
+          <Route path="contas-pagar" element={<ContasPagar />} />
         </Route>
       </Routes>
     </BrowserRouter>

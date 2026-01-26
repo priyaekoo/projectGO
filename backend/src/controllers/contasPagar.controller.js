@@ -1,17 +1,6 @@
 const pool = require("../config/database");
 
 /**
- * Normaliza valor monetário
- * Aceita "250,00" ou 250.00
- */
-function normalizarValor(valor) {
-  if (typeof valor === "string") {
-    return Number(valor.replace(",", "."));
-  }
-  return Number(valor);
-}
-
-/**
  * Criar conta a pagar
  */
 exports.criar = async (req, res) => {
@@ -23,15 +12,10 @@ exports.criar = async (req, res) => {
     });
   }
 
-  const valorNumerico = normalizarValor(valor);
-
-  if (isNaN(valorNumerico) || valorNumerico <= 0) {
-    return res.status(400).json({
-      erro: "Valor inválido",
-    });
-  }
-
   try {
+    // 🔒 Garantia: valor sempre como número decimal
+    const valorNumerico = Number(valor);
+
     const result = await pool.query(
       `
       INSERT INTO contas_pagar
@@ -73,7 +57,7 @@ exports.listar = async (req, res) => {
 };
 
 /**
- * Pagar conta
+ * 💸 Pagar conta a pagar (GERA SAÍDA FINANCEIRA)
  */
 exports.pagar = async (req, res) => {
   const { id } = req.params;
@@ -82,27 +66,31 @@ exports.pagar = async (req, res) => {
   try {
     await client.query("BEGIN");
 
-    const conta = await client.query(
+    // 1️⃣ Buscar a conta
+    const contaResult = await client.query(
       `
-      SELECT id, valor, status
+      SELECT id, id_fornecedor, valor, status
       FROM contas_pagar
       WHERE id = $1
       `,
       [id],
     );
 
-    if (conta.rowCount === 0) {
+    if (contaResult.rowCount === 0) {
       await client.query("ROLLBACK");
       return res.status(404).json({ erro: "Conta não encontrada" });
     }
 
-    if (conta.rows[0].status !== "PENDENTE") {
+    const conta = contaResult.rows[0];
+
+    if (conta.status !== "PENDENTE") {
       await client.query("ROLLBACK");
       return res.status(400).json({
         erro: "Apenas contas pendentes podem ser pagas",
       });
     }
 
+    // 2️⃣ Atualizar conta como PAGA
     await client.query(
       `
       UPDATE contas_pagar
@@ -113,15 +101,26 @@ exports.pagar = async (req, res) => {
       [id],
     );
 
+    // 3️⃣ Criar movimentação financeira (SAÍDA)
+    await client.query(
+      `
+      INSERT INTO movimentacoes
+        (id_fornecedor, tipo, valor, origem, id_origem, descricao)
+      VALUES
+        ($1, 'SAIDA', $2, 'CONTA_PAGAR', $3, 'Pagamento de conta a pagar')
+      `,
+      [conta.id_fornecedor, conta.valor, conta.id],
+    );
+
     await client.query("COMMIT");
 
     return res.json({
-      mensagem: "Conta paga com sucesso",
+      mensagem: "Conta paga e saída financeira registrada com sucesso",
     });
   } catch (error) {
     await client.query("ROLLBACK");
     return res.status(500).json({
-      erro: "Erro ao pagar conta",
+      erro: "Erro ao pagar conta a pagar",
       detalhe: error.message,
     });
   } finally {
@@ -130,7 +129,7 @@ exports.pagar = async (req, res) => {
 };
 
 /**
- * Cancelar conta
+ * Cancelar conta a pagar
  */
 exports.cancelar = async (req, res) => {
   const { id } = req.params;
@@ -140,8 +139,7 @@ exports.cancelar = async (req, res) => {
       `
       UPDATE contas_pagar
       SET status = 'CANCELADA'
-      WHERE id = $1
-        AND status = 'PENDENTE'
+      WHERE id = $1 AND status = 'PENDENTE'
       RETURNING *
       `,
       [id],

@@ -30,6 +30,8 @@ function Dashboard() {
           Contas a Receber
         </button>
 
+        <button onClick={() => navigate("contas-pagar")}>Contas a Pagar</button>
+
         <button onClick={() => navigate("depositos")}>Depósitos</button>
 
         <button className="logout" onClick={logout}>
