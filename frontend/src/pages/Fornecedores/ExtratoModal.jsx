@@ -1,31 +1,31 @@
 import { useEffect, useState } from "react";
 import api from "../../services/api";
-import "./clientes.css";
 import { FiRotateCcw } from "react-icons/fi";
 
-function ExtratoModal({ cliente, onClose }) {
+function ExtratoModal({ fornecedor, onClose }) {
   const [saldo, setSaldo] = useState(null);
   const [extrato, setExtrato] = useState([]);
   const [erro, setErro] = useState("");
 
   useEffect(() => {
-    carregarDados();
-  }, []);
+    if (fornecedor) {
+      carregarDados();
+    }
+  }, [fornecedor]);
 
-  async function carregarDados() {
+  const carregarDados = async () => {
     try {
-      const [saldoResponse, extratoResponse] = await Promise.all([
-        api.get(`/clientes/${cliente.id}/saldo`),
-        api.get(`/clientes/${cliente.id}/extrato`),
+      const [resSaldo, resExtrato] = await Promise.all([
+        api.get(`/fornecedores/${fornecedor.id}/saldo`),
+        api.get(`/fornecedores/${fornecedor.id}/extrato`),
       ]);
-
-      setSaldo(saldoResponse.data);
-      setExtrato(extratoResponse.data);
+      setSaldo(resSaldo.data);
+      setExtrato(resExtrato.data);
       setErro("");
     } catch {
-      setErro("Erro ao carregar dados");
+      setErro("Erro ao carregar extrato");
     }
-  }
+  };
 
   const estornarMovimentacao = async (idMovimentacao) => {
     if (!window.confirm("Deseja estornar esta movimentacao?")) return;
@@ -49,11 +49,10 @@ function ExtratoModal({ cliente, onClose }) {
   };
 
   return (
-    <div className="modal-overlay">
-      <div className="modal-extrato">
-        {/* HEADER */}
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-extrato" onClick={(e) => e.stopPropagation()}>
         <div className="modal-extrato-header">
-          <h2>{cliente.nome_completo}</h2>
+          <h2>Extrato - {fornecedor.nome_razao_social}</h2>
           <button className="btn-fechar-x" onClick={onClose}>
             &times;
           </button>
@@ -61,13 +60,13 @@ function ExtratoModal({ cliente, onClose }) {
 
         {erro && <p className="mensagem-erro">{erro}</p>}
 
-        {/* SALDO */}
-        <div className="saldo-box">
-          <span>Saldo Atual</span>
-          <strong>R$ {Number(saldo?.saldo_atual || 0).toFixed(2)}</strong>
-        </div>
+        {saldo && (
+          <div className="saldo-box">
+            <span>Saldo Atual</span>
+            <strong>R$ {Number(saldo.saldo_atual).toFixed(2)}</strong>
+          </div>
+        )}
 
-        {/* TABELA */}
         <div className="extrato-wrapper">
           {extrato.length === 0 ? (
             <p style={{ color: "#888", textAlign: "center" }}>
@@ -78,8 +77,8 @@ function ExtratoModal({ cliente, onClose }) {
               <thead>
                 <tr>
                   <th>Data</th>
-                  <th>Origem</th>
                   <th>Descricao</th>
+                  <th>Origem</th>
                   <th>Valor</th>
                   <th>Acao</th>
                 </tr>
@@ -91,11 +90,11 @@ function ExtratoModal({ cliente, onClose }) {
                     style={{ opacity: mov.estornado ? 0.5 : 1 }}
                   >
                     <td>{formatarData(mov.data_movimentacao)}</td>
-                    <td>{mov.origem}</td>
                     <td>
                       {mov.descricao}
                       {mov.estornado && " (ESTORNADO)"}
                     </td>
+                    <td>{mov.origem}</td>
                     <td className={mov.tipo === "ENTRADA" ? "entrada" : "saida"}>
                       {mov.tipo === "ENTRADA" ? "+" : "-"} R${" "}
                       {Number(mov.valor).toFixed(2)}
@@ -118,7 +117,6 @@ function ExtratoModal({ cliente, onClose }) {
           )}
         </div>
 
-        {/* FOOTER */}
         <div className="modal-acoes">
           <button className="btn-fechar" onClick={onClose}>
             Fechar

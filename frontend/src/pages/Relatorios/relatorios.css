@@ -1,0 +1,157 @@
+.relatorios-container {
+  width: 100%;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+.relatorios-container h1 {
+  font-size: 32px;
+  margin-bottom: 24px;
+}
+
+/* CARDS */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  margin-bottom: 32px;
+}
+
+.card {
+  padding: 20px;
+  border-radius: 12px;
+  color: #fff;
+}
+
+.card h3 {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 8px;
+  opacity: 0.9;
+}
+
+.card-numero {
+  font-size: 36px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.card-detalhe {
+  font-size: 13px;
+  opacity: 0.8;
+}
+
+.card-azul {
+  background: linear-gradient(135deg, #1a73e8, #0b5ed7);
+}
+
+.card-verde {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+}
+
+.card-amarelo {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+}
+
+.card-roxo {
+  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+}
+
+/* MOVIMENTACOES */
+.movimentacoes-box {
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.movimentacoes-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.movimentacoes-header h2 {
+  font-size: 20px;
+}
+
+.movimentacoes-totais {
+  display: flex;
+  gap: 24px;
+}
+
+.total-item {
+  font-size: 14px;
+  color: #b5b5b5;
+}
+
+.total-item strong {
+  color: #fff;
+}
+
+.movimentacoes-box h3 {
+  font-size: 14px;
+  color: #b5b5b5;
+  margin-bottom: 16px;
+}
+
+.movimentacoes-tabela {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.movimentacoes-tabela th {
+  text-align: left;
+  font-size: 13px;
+  font-weight: 500;
+  color: #b5b5b5;
+  padding: 8px 12px;
+  border-bottom: 1px solid #333;
+}
+
+.movimentacoes-tabela td {
+  padding: 12px;
+  font-size: 14px;
+  color: #fff;
+  border-bottom: 1px solid #2a2a2a;
+}
+
+.tipo-entrada {
+  color: #22c55e;
+  font-weight: 500;
+}
+
+.tipo-saida {
+  color: #ef4444;
+  font-weight: 500;
+}
+
+.mensagem-erro {
+  color: #ef4444;
+  margin-bottom: 16px;
+}
+
+/* RESPONSIVO */
+@media (max-width: 1200px) {
+  .cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .cards-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .movimentacoes-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .movimentacoes-totais {
+    flex-direction: column;
+    gap: 8px;
+  }
+}

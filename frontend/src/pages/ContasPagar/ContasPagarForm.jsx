@@ -4,9 +4,11 @@ import "../Usuarios/usuarios.css";
 
 function ContasPagarForm({ aberto, onClose, onSucesso, contaEditar = null }) {
   const [fornecedores, setFornecedores] = useState([]);
+  const [clientes, setClientes] = useState([]);
 
   const [form, setForm] = useState({
     id_fornecedor: "",
+    id_cliente: "",
     descricao: "",
     valor: "",
     data_vencimento: "",
@@ -14,18 +16,27 @@ function ContasPagarForm({ aberto, onClose, onSucesso, contaEditar = null }) {
 
   const [erro, setErro] = useState("");
 
-  const carregarFornecedores = async () => {
-    const res = await api.get("/fornecedores");
-    setFornecedores(res.data);
+  const carregarDados = async () => {
+    try {
+      const [resFornecedores, resClientes] = await Promise.all([
+        api.get("/fornecedores"),
+        api.get("/clientes"),
+      ]);
+      setFornecedores(resFornecedores.data);
+      setClientes(resClientes.data);
+    } catch {
+      setErro("Erro ao carregar dados");
+    }
   };
 
   useEffect(() => {
     if (aberto) {
-      carregarFornecedores();
+      carregarDados();
 
       if (contaEditar) {
         setForm({
           id_fornecedor: contaEditar.id_fornecedor,
+          id_cliente: contaEditar.id_cliente || "",
           descricao: contaEditar.descricao,
           valor: contaEditar.valor,
           data_vencimento: contaEditar.data_vencimento,
@@ -33,6 +44,7 @@ function ContasPagarForm({ aberto, onClose, onSucesso, contaEditar = null }) {
       } else {
         setForm({
           id_fornecedor: "",
+          id_cliente: "",
           descricao: "",
           valor: "",
           data_vencimento: "",
@@ -79,6 +91,7 @@ function ContasPagarForm({ aberto, onClose, onSucesso, contaEditar = null }) {
         {erro && <p className="mensagem-erro">{erro}</p>}
 
         <form className="form" onSubmit={handleSubmit}>
+          <label>Fornecedor (quem vai receber)</label>
           <select
             name="id_fornecedor"
             value={form.id_fornecedor}
@@ -87,22 +100,42 @@ function ContasPagarForm({ aberto, onClose, onSucesso, contaEditar = null }) {
             disabled={!!contaEditar}
           >
             <option value="">Selecione o fornecedor</option>
-            {fornecedores.map((f) => (
-              <option key={f.id} value={f.id}>
-                {f.nome}
-              </option>
-            ))}
+            {fornecedores
+              .filter((f) => f.ativo)
+              .map((f) => (
+                <option key={f.id} value={f.id}>
+                  {f.nome_razao_social}
+                </option>
+              ))}
           </select>
 
+          <label>Cliente (quem vai pagar) - opcional</label>
+          <select
+            name="id_cliente"
+            value={form.id_cliente}
+            onChange={handleChange}
+          >
+            <option value="">Selecionar no momento do pagamento</option>
+            {clientes
+              .filter((c) => c.ativo)
+              .map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.nome_completo}
+                </option>
+              ))}
+          </select>
+
+          <label>Descricao</label>
           <input
             type="text"
             name="descricao"
-            placeholder="Descrição"
+            placeholder="Descricao"
             value={form.descricao}
             onChange={handleChange}
             required
           />
 
+          <label>Valor</label>
           <input
             type="number"
             name="valor"
@@ -114,6 +147,7 @@ function ContasPagarForm({ aberto, onClose, onSucesso, contaEditar = null }) {
             required
           />
 
+          <label>Data de Vencimento</label>
           <input
             type="date"
             name="data_vencimento"

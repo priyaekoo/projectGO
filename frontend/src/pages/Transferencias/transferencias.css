@@ -1,0 +1,142 @@
+.transferencias-container {
+  width: 100%;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+.transferencias-container h1 {
+  font-size: 32px;
+  margin-bottom: 24px;
+}
+
+.transferencias-content {
+  display: grid;
+  grid-template-columns: 400px 1fr;
+  gap: 32px;
+}
+
+/* FORMULARIO */
+.transferencias-form-box {
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.transferencias-form-box h2 {
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 13px;
+  color: #b5b5b5;
+  margin-bottom: 6px;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #333;
+  border-radius: 8px;
+  background: #2a2a2a;
+  color: #fff;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #1a73e8;
+}
+
+.btn-transferir {
+  width: 100%;
+  background: linear-gradient(180deg, #1a73e8, #0b5ed7);
+  color: #fff;
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 8px;
+}
+
+.btn-transferir:hover {
+  opacity: 0.9;
+}
+
+/* MENSAGENS */
+.mensagem-erro {
+  color: #ef4444;
+  font-size: 14px;
+  margin: 10px 0;
+}
+
+.mensagem-sucesso {
+  color: #22c55e;
+  font-size: 14px;
+  margin: 10px 0;
+}
+
+.mensagem-vazia {
+  color: #888;
+  font-size: 14px;
+}
+
+/* HISTORICO */
+.transferencias-historico {
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.transferencias-historico h2 {
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
+.historico-tabela {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.historico-tabela th {
+  text-align: left;
+  font-size: 13px;
+  font-weight: 500;
+  color: #b5b5b5;
+  padding: 8px 12px;
+  border-bottom: 1px solid #333;
+}
+
+.historico-tabela td {
+  padding: 12px;
+  font-size: 14px;
+  color: #fff;
+  border-bottom: 1px solid #2a2a2a;
+}
+
+.tipo-entrada {
+  color: #22c55e;
+  font-weight: 500;
+}
+
+.tipo-saida {
+  color: #ef4444;
+  font-weight: 500;
+}
+
+/* RESPONSIVO */
+@media (max-width: 900px) {
+  .transferencias-content {
+    grid-template-columns: 1fr;
+  }
+}

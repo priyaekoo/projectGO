@@ -1,16 +1,16 @@
 /* ================================
    CONTAINER
 ================================ */
-.usuarios-container {
+.fornecedores-container {
   width: 100%;
   padding: 24px;
   box-sizing: border-box;
 }
 
 /* ================================
-   TÍTULO E BOTÃO
+   TITULO E BOTAO
 ================================ */
-.usuarios-container h1 {
+.fornecedores-container h1 {
   font-size: 32px;
   margin-bottom: 12px;
 }
@@ -34,13 +34,13 @@
 /* ================================
    TABELA
 ================================ */
-.usuarios-tabela {
+.fornecedores-tabela {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0 12px;
 }
 
-.usuarios-tabela thead th {
+.fornecedores-tabela thead th {
   text-align: left;
   font-size: 13px;
   font-weight: 500;
@@ -48,23 +48,23 @@
   padding: 8px 16px;
 }
 
-.usuarios-tabela tbody tr {
+.fornecedores-tabela tbody tr {
   background: rgba(255, 255, 255, 0.04);
   border-radius: 12px;
 }
 
-.usuarios-tabela tbody td {
+.fornecedores-tabela tbody td {
   padding: 16px;
   font-size: 14px;
   color: #ffffff;
 }
 
-.usuarios-tabela tbody tr td:first-child {
+.fornecedores-tabela tbody tr td:first-child {
   border-top-left-radius: 12px;
   border-bottom-left-radius: 12px;
 }
 
-.usuarios-tabela tbody tr td:last-child {
+.fornecedores-tabela tbody tr td:last-child {
   border-top-right-radius: 12px;
   border-bottom-right-radius: 12px;
 }
@@ -83,7 +83,7 @@
 }
 
 /* ================================
-   AÇÕES (ÍCONES)
+   ACOES (ICONES)
 ================================ */
 .acoes {
   display: flex;
@@ -91,7 +91,6 @@
   align-items: center;
 }
 
-/* botão base */
 .btn-icon {
   background: transparent;
   border: none;
@@ -102,23 +101,21 @@
   justify-content: center;
 }
 
-/* 🔹 TAMANHO DOS ÍCONES */
 .btn-icon svg {
-  width: 18px; /* <<< ajuste principal */
+  width: 18px;
   height: 18px;
 }
 
-/* cores */
 .btn-icon.editar svg {
   color: #3b82f6;
 }
 
-.btn-icon.saldo svg {
-  color: #22c55e;
-}
-
 .btn-icon.excluir svg {
   color: #ef4444;
+}
+
+.btn-icon.reativar svg {
+  color: #22c55e;
 }
 
 .btn-icon:hover svg {
@@ -126,7 +123,7 @@
 }
 
 /* ================================
-   MENSAGEM VAZIA
+   MENSAGENS
 ================================ */
 .mensagem-vazia {
   margin-top: 24px;
@@ -134,9 +131,15 @@
   color: #b5b5b5;
 }
 
-/* ===========================
-   MODAL OVERLAY
-=========================== */
+.mensagem-erro {
+  color: #ef4444;
+  font-size: 14px;
+  margin: 10px 0;
+}
+
+/* ================================
+   MODAL
+================================ */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -150,9 +153,108 @@
   z-index: 999;
 }
 
-/* ===========================
+.modal-content {
+  background: #1f1f1f;
+  width: 500px;
+  max-width: 90%;
+  border-radius: 12px;
+  padding: 24px;
+  color: #fff;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+.modal-content h2 {
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+/* ================================
+   FORMULARIO
+================================ */
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 13px;
+  color: #b5b5b5;
+  margin-bottom: 6px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #333;
+  border-radius: 8px;
+  background: #2a2a2a;
+  color: #fff;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #1a73e8;
+}
+
+.form-group input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.form-group textarea {
+  resize: vertical;
+}
+
+/* ================================
+   BOTOES DO MODAL
+================================ */
+.modal-acoes {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.btn-cancelar {
+  background: #333;
+  color: #fff;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.btn-cancelar:hover {
+  background: #444;
+}
+
+.btn-salvar {
+  background: linear-gradient(180deg, #1a73e8, #0b5ed7);
+  color: #fff;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.btn-salvar:hover {
+  opacity: 0.9;
+}
+
+/* ================================
    MODAL EXTRATO
-=========================== */
+================================ */
 .modal-extrato {
   background: #1f1f1f;
   width: 720px;
@@ -164,7 +266,6 @@
   animation: fadeIn 0.2s ease-in-out;
 }
 
-/* HEADER */
 .modal-extrato-header {
   display: flex;
   justify-content: space-between;
@@ -189,7 +290,6 @@
   color: #fff;
 }
 
-/* SALDO */
 .saldo-box {
   background: linear-gradient(135deg, #1a73e8, #0b5ed7);
   padding: 16px;
@@ -210,7 +310,6 @@
   font-weight: bold;
 }
 
-/* TABELA */
 .extrato-wrapper {
   max-height: 280px;
   overflow-y: auto;
@@ -240,7 +339,6 @@
   border-bottom: none;
 }
 
-/* VALORES */
 .extrato-tabela .entrada {
   color: #4caf50;
   font-weight: 600;
@@ -249,12 +347,6 @@
 .extrato-tabela .saida {
   color: #f44336;
   font-weight: 600;
-}
-
-/* FOOTER */
-.modal-acoes {
-  display: flex;
-  justify-content: flex-end;
 }
 
 .btn-fechar {
@@ -270,7 +362,6 @@
   background: #444;
 }
 
-/* BOTAO ESTORNO */
 .btn-icon-estorno {
   background: transparent;
   border: none;
@@ -286,14 +377,13 @@
   color: #d97706;
 }
 
-/* MENSAGEM ERRO */
-.mensagem-erro {
-  color: #ef4444;
-  font-size: 14px;
-  margin: 10px 0;
+.btn-icon.saldo svg {
+  color: #22c55e;
 }
 
-/* ANIMAÇÃO */
+/* ================================
+   ANIMACAO
+================================ */
 @keyframes fadeIn {
   from {
     opacity: 0;

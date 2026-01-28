@@ -19,9 +19,7 @@ app.use("/auth", require("./routes/auth.routes"));
 // =====================
 app.use("/usuarios", require("./routes/usuarios.routes"));
 app.use("/clientes", require("./routes/clientes.routes"));
-app.use("/pacientes", require("./routes/pacientes.routes"));
-app.use("/especialidades", require("./routes/especialidades"));
-app.use("/profissionais", require("./routes/profissionais"));
+app.use("/fornecedores", require("./routes/fornecedores.routes"));
 
 // =====================
 // UPLOAD
@@ -40,6 +38,21 @@ app.use("/depositos", require("./routes/depositos.routes"));
 
 // contas a pagar
 app.use("/contas-pagar", require("./routes/contasPagar.routes"));
+
+// =====================
+// TRANSFERENCIAS
+// =====================
+app.use("/transferencias", require("./routes/transferencias.routes"));
+
+// =====================
+// ESTORNOS
+// =====================
+app.use("/estornos", require("./routes/estornos.routes"));
+
+// =====================
+// RELATORIOS
+// =====================
+app.use("/relatorios", require("./routes/relatorios.routes"));
 
 // =====================
 // ROTA DE TESTE DO BANCO

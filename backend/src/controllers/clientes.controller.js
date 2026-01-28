@@ -112,7 +112,7 @@ exports.reativar = async (req, res) => {
 };
 
 /**
- * 💰 CONSULTAR SALDO (ENTRADA - SAÍDA)
+ * CONSULTAR SALDO (ENTRADA - SAIDA)
  */
 exports.consultarSaldo = async (req, res) => {
   const { id } = req.params;
@@ -135,15 +135,15 @@ exports.consultarSaldo = async (req, res) => {
           0
         ) AS saldo_atual
       FROM clientes cl
-      LEFT JOIN movimentacoes m ON m.id_cliente = cl.id
+      LEFT JOIN movimentacoes m ON m.id_cliente = cl.id AND m.estornado = false
       WHERE cl.id = $1
       GROUP BY cl.id
       `,
-      [id],
+      [id]
     );
 
     if (result.rowCount === 0) {
-      return res.status(404).json({ erro: "Cliente não encontrado" });
+      return res.status(404).json({ erro: "Cliente nao encontrado" });
     }
 
     return res.json(result.rows[0]);
@@ -156,7 +156,7 @@ exports.consultarSaldo = async (req, res) => {
 };
 
 /**
- * 📄 EXTRATO FINANCEIRO
+ * EXTRATO FINANCEIRO
  */
 exports.extrato = async (req, res) => {
   const { id } = req.params;
@@ -165,16 +165,18 @@ exports.extrato = async (req, res) => {
     const result = await pool.query(
       `
       SELECT
+        id,
         tipo,
         valor,
         origem,
         descricao,
-        data_movimentacao
+        data_movimentacao,
+        estornado
       FROM movimentacoes
       WHERE id_cliente = $1
       ORDER BY data_movimentacao DESC
       `,
-      [id],
+      [id]
     );
 
     return res.json(result.rows);
