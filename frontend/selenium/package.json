@@ -1,0 +1,18 @@
+{
+  "name": "projectgo-selenium-tests",
+  "version": "1.0.0",
+  "description": "Selenium WebDriver tests for ProjectGO",
+  "scripts": {
+    "test": "mocha tests/**/*.test.js --timeout 30000",
+    "test:api": "mocha tests/api/**/*.test.js --timeout 30000",
+    "test:ui": "mocha tests/ui/**/*.test.js --timeout 30000"
+  },
+  "devDependencies": {
+    "selenium-webdriver": "^4.18.0",
+    "mocha": "^10.3.0",
+    "chai": "^4.4.1",
+    "chai-http": "^4.4.0",
+    "chromedriver": "^122.0.0",
+    "geckodriver": "^4.3.0"
+  }
+}
