@@ -2,6 +2,15 @@
 chcp 65001 >nul
 setlocal enabledelayedexpansion
 
+:: ============================================================================
+:: GIT HELPER - ProjectGO
+:: Script para gerenciar branches de desenvolvimento e testes
+:: IMPORTANTE: Usa cherry-pick para preservar os testes nas branches
+:: ============================================================================
+
+:: Commit base (onde os testes foram removidos da main)
+set BASE_COMMIT=9c41f66
+
 :MENU
 cls
 echo.
@@ -17,8 +26,10 @@ echo   3) Trocar para branch cypress-tests
 echo   4) Trocar para branch playwright-tests
 echo   5) Trocar para branch selenium-tests
 echo   6) Atualizar TODAS as branches de teste com main
-echo   7) Ver explicacao do fluxo de trabalho
-echo   8) Sair
+echo   7) Atualizar UMA branch de teste com main
+echo   8) Ver commits pendentes para sincronizar
+echo   9) Ver explicacao do fluxo de trabalho
+echo   0) Sair
 echo.
 set /p opcao="Opcao: "
 
@@ -28,8 +39,10 @@ if "%opcao%"=="3" goto CYPRESS
 if "%opcao%"=="4" goto PLAYWRIGHT
 if "%opcao%"=="5" goto SELENIUM
 if "%opcao%"=="6" goto UPDATE_ALL
-if "%opcao%"=="7" goto WORKFLOW
-if "%opcao%"=="8" goto FIM
+if "%opcao%"=="7" goto UPDATE_ONE
+if "%opcao%"=="8" goto PENDING
+if "%opcao%"=="9" goto WORKFLOW
+if "%opcao%"=="0" goto FIM
 goto MENU
 
 :STATUS
@@ -109,16 +122,101 @@ echo.
 pause
 goto MENU
 
+:PENDING
+cls
+echo === Commits Pendentes para Sincronizar ===
+echo.
+echo Buscando commits na main...
+git fetch origin main 2>nul
+echo.
+echo Commits na main apos a separacao das branches:
+echo.
+git log --oneline %BASE_COMMIT%..origin/main 2>nul | findstr /v "remove test files"
+echo.
+echo Estes commits serao aplicados nas branches de teste via cherry-pick.
+echo.
+pause
+goto MENU
+
+:UPDATE_ONE
+cls
+echo Qual branch deseja atualizar?
+echo   1) cypress-tests
+echo   2) playwright-tests
+echo   3) selenium-tests
+echo.
+set /p branch_choice="Escolha: "
+set "branch="
+
+if "%branch_choice%"=="1" set "branch=cypress-tests"
+if "%branch_choice%"=="2" set "branch=playwright-tests"
+if "%branch_choice%"=="3" set "branch=selenium-tests"
+
+if "%branch%"=="" (
+    echo Opcao invalida
+    pause
+    goto MENU
+)
+
+:: Salva branch atual
+for /f "tokens=*" %%i in ('git branch --show-current') do set "current_branch=%%i"
+
+echo.
+echo Atualizando %branch%...
+echo.
+
+:: Atualiza main
+git checkout main 2>nul
+git pull origin main 2>nul
+
+:: Vai para branch de teste
+git checkout %branch% 2>nul
+git pull origin %branch% 2>nul
+
+:: Aplica commits via cherry-pick
+for /f "tokens=1,*" %%a in ('git log --oneline --reverse %BASE_COMMIT%..main 2^>nul') do (
+    echo %%b | findstr /c:"remove test files" >nul 2>&1
+    if errorlevel 1 (
+        git log --oneline %branch% | findstr /c:"%%b" >nul 2>&1
+        if errorlevel 1 (
+            echo   Aplicando: %%a - %%b
+            git cherry-pick %%a 2>nul
+            if errorlevel 1 (
+                git cherry-pick --abort 2>nul
+                echo   [AVISO] Conflito em %%a - pulando
+            )
+        ) else (
+            echo   Ja aplicado: %%b
+        )
+    )
+)
+
+git push origin %branch% 2>nul
+echo.
+echo %branch% atualizada!
+
+:: Volta para branch original
+git checkout %current_branch% 2>nul
+echo.
+pause
+goto MENU
+
 :UPDATE_ALL
 cls
 echo ============================================
 echo  Atualizando TODAS as branches de teste
 echo ============================================
 echo.
-echo ATENCAO: Certifique-se de que nao ha alteracoes pendentes!
+echo IMPORTANTE: Este script usa cherry-pick para preservar os testes.
+echo Commits da main serao aplicados individualmente.
+echo.
+echo NAO use 'git merge main' diretamente nas branches de teste!
 echo.
 set /p confirma="Deseja continuar? (S/N): "
 if /i not "%confirma%"=="S" goto MENU
+
+:: Salva branch atual
+for /f "tokens=*" %%i in ('git branch --show-current') do set "current_branch=%%i"
 
 echo.
 echo [1/4] Atualizando main...
@@ -126,26 +224,44 @@ git checkout main
 git pull origin main
 echo.
 
-echo [2/4] Atualizando cypress-tests...
-git checkout cypress-tests
-git merge main -m "merge: atualiza cypress-tests com alteracoes da main"
-git push origin cypress-tests
+:: Lista commits para aplicar
+echo Commits a serem aplicados:
+git log --oneline --reverse %BASE_COMMIT%..main 2>nul | findstr /v "remove test files"
 echo.
 
-echo [3/4] Atualizando playwright-tests...
-git checkout playwright-tests
-git merge main -m "merge: atualiza playwright-tests com alteracoes da main"
-git push origin playwright-tests
-echo.
+:: Atualiza cada branch
+for %%b in (cypress-tests playwright-tests selenium-tests) do (
+    echo ============================================
+    echo Processando %%b...
+    echo ============================================
 
-echo [4/4] Atualizando selenium-tests...
-git checkout selenium-tests
-git merge main -m "merge: atualiza selenium-tests com alteracoes da main"
-git push origin selenium-tests
-echo.
+    git checkout %%b 2>nul
+    git pull origin %%b 2>nul
 
-echo Voltando para main...
-git checkout main
+    for /f "tokens=1,*" %%c in ('git log --oneline --reverse %BASE_COMMIT%..main 2^>nul') do (
+        echo %%d | findstr /c:"remove test files" >nul 2>&1
+        if errorlevel 1 (
+            git log --oneline %%b | findstr /c:"%%d" >nul 2>&1
+            if errorlevel 1 (
+                echo   Aplicando: %%c - %%d
+                git cherry-pick %%c 2>nul
+                if errorlevel 1 (
+                    git cherry-pick --abort 2>nul
+                    echo   [AVISO] Conflito - pulando
+                )
+            ) else (
+                echo   Ja aplicado: %%d
+            )
+        )
+    )
+
+    git push origin %%b 2>nul
+    echo %%b atualizada!
+    echo.
+)
+
+echo Voltando para %current_branch%...
+git checkout %current_branch% 2>nul
 echo.
 echo ============================================
 echo  TODAS AS BRANCHES ATUALIZADAS COM SUCESSO!
@@ -174,7 +290,8 @@ echo ============================================
 echo.
 echo   1. NUNCA altere codigo da aplicacao nas branches de teste
 echo   2. Desenvolvimento da aplicacao SEMPRE na branch main
-echo   3. Apos finalizar algo na main, atualize as branches de teste
+echo   3. Apos finalizar algo na main, use este script para atualizar
+echo   4. NAO use 'git merge main' diretamente - use este script!
 echo.
 echo ============================================
 echo FLUXO PARA DESENVOLVER A APLICACAO:
@@ -187,12 +304,18 @@ echo   git commit -m "sua mensagem"
 echo   git push origin main
 echo.
 echo ============================================
+echo FLUXO PARA ATUALIZAR BRANCHES DE TESTE:
+echo ============================================
+echo.
+echo   # Use este script! (opcao 6)
+echo   # O script usa cherry-pick para preservar os testes
+echo   # NAO use 'git merge main' diretamente!
+echo.
+echo ============================================
 echo FLUXO PARA CRIAR TESTES:
 echo ============================================
 echo.
-echo   # Primeiro, atualize a branch de teste com a main
 echo   git checkout cypress-tests
-echo   git merge main
 echo   # ... cria os testes ...
 echo   git add .
 echo   git commit -m "test: sua mensagem"
@@ -207,9 +330,12 @@ echo                     ^|       main       ^|
 echo                     ^|   (aplicacao)    ^|
 echo                     +--------+---------+
 echo                              ^|
-echo           +------------------+------------------+
-echo           ^|                  ^|                  ^|
-echo           v                  v                  v
+echo                        cherry-pick
+echo                      (NAO use merge!)
+echo                              ^|
+echo          +------------------+------------------+
+echo          ^|                  ^|                  ^|
+echo          v                  v                  v
 echo  +----------------+ +----------------+ +----------------+
 echo  ^| cypress-tests  ^| ^|playwright-tests^| ^| selenium-tests ^|
 echo  +----------------+ +----------------+ +----------------+
