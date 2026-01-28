@@ -53,21 +53,17 @@ git push origin main
 
 **IMPORTANTE:** Sempre que finalizar algo na `main`, atualize as branches de teste!
 
-**Opcao A - Usando o script (recomendado):**
+**ATENCAO: NAO use `git merge main` diretamente! Isso apagaria os testes.**
+
+**Use o script (OBRIGATORIO):**
 ```cmd
 scripts\git-helper.bat
 # Escolha opcao 6 - Atualizar TODAS as branches
+# Ou opcao 7 - Atualizar UMA branch especifica
 ```
 
-**Opcao B - Manualmente:**
-```bash
-# Atualiza cypress-tests
-git checkout cypress-tests
-git merge main
-git push origin cypress-tests
-
-# Repita para as outras branches
-```
+O script usa **cherry-pick** para aplicar apenas os commits novos da main,
+preservando os arquivos de teste em cada branch.
 
 ### 3. Criando Testes Automatizados
 
@@ -75,8 +71,8 @@ git push origin cypress-tests
 # Troca para a branch de teste desejada
 git checkout cypress-tests  # ou playwright-tests ou selenium-tests
 
-# Atualiza com a main (se necessario)
-git merge main
+# NAO faca merge! Use o script se precisar atualizar
+# scripts/git-helper.bat (opcao 7)
 
 # Cria os testes
 # ... edita arquivos na pasta de testes ...
@@ -123,12 +119,13 @@ npm run test:ui          # Apenas testes de UI
 
 1. **NUNCA** altere codigo da aplicacao (backend/frontend) nas branches de teste
 2. **SEMPRE** desenvolva a aplicacao na branch `main`
-3. **SEMPRE** atualize as branches de teste apos finalizar algo na `main`
-4. Se encontrar um bug enquanto escreve testes:
+3. **SEMPRE** use o script para atualizar as branches de teste
+4. **NUNCA** use `git merge main` nas branches de teste (apaga os testes!)
+5. Se encontrar um bug enquanto escreve testes:
    - Volte para `main`
    - Corrija o bug
    - Commit e push na `main`
-   - Volte para branch de teste e faca `git merge main`
+   - Use o script (opcao 6 ou 7) para atualizar a branch de teste
 
 ---
 
@@ -141,7 +138,8 @@ npm run test:ui          # Apenas testes de UI
                     │  backend/ frontend/ │
                     └──────────┬──────────┘
                                │
-                               │ git merge main
+                               │ cherry-pick (via script)
+                               │ NAO use merge!
                                │
          ┌─────────────────────┼─────────────────────┐
          │                     │                     │
@@ -180,4 +178,25 @@ npm run dev
 ```bash
 # Execute os testes conforme a branch que estiver
 npx cypress open  # ou playwright test, etc.
+```
+
+---
+
+## Menu do Script
+
+```
+============================================
+       ProjectGO - Git Helper
+============================================
+
+  1) Ver status atual (branch e alteracoes)
+  2) Trocar para branch main (desenvolvimento)
+  3) Trocar para branch cypress-tests
+  4) Trocar para branch playwright-tests
+  5) Trocar para branch selenium-tests
+  6) Atualizar TODAS as branches de teste com main
+  7) Atualizar UMA branch de teste com main
+  8) Ver commits pendentes para sincronizar
+  9) Ver explicacao do fluxo de trabalho
+  0) Sair
 ```
