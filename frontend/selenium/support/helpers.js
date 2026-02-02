@@ -2,6 +2,9 @@ const { Builder, By, until } = require('selenium-webdriver');
 const chrome = require('selenium-webdriver/chrome');
 const config = require('../selenium.config');
 
+// Força uso do chromedriver do npm
+require('chromedriver');
+
 class TestHelpers {
   constructor() {
     this.driver = null;
@@ -9,20 +12,26 @@ class TestHelpers {
   }
 
   async initBrowser() {
+    console.log('    [helpers] Configurando opções do Chrome...');
     const options = new chrome.Options();
 
+    // Modo headless (sem abrir janela)
     if (config.browser.headless) {
-      options.addArguments('--headless');
+      options.addArguments('--headless=new');
     }
 
+    // Configurações para Windows
     options.addArguments(`--window-size=${config.browser.windowSize.width},${config.browser.windowSize.height}`);
     options.addArguments('--no-sandbox');
     options.addArguments('--disable-dev-shm-usage');
+    options.addArguments('--disable-gpu');
 
+    console.log('    [helpers] Criando driver...');
     this.driver = await new Builder()
       .forBrowser(config.browser.name)
       .setChromeOptions(options)
       .build();
+    console.log('    [helpers] Driver criado!');
 
     await this.driver.manage().setTimeouts({
       implicit: config.timeouts.implicit,

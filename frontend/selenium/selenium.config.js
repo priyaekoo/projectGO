@@ -4,7 +4,7 @@ module.exports = {
 
   browser: {
     name: 'chrome',
-    headless: true,
+    headless: false,  // false = abre navegador visível
     windowSize: {
       width: 1920,
       height: 1080

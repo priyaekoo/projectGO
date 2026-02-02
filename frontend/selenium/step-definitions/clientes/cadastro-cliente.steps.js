@@ -10,16 +10,16 @@ let resposta;
 let clienteIdCriado;
 
 /**
- * HOOKS - Executados antes/depois de cada cenário
+ * HOOKS - Executados antes/depois de cada cenário com tag @api
  */
-Before(async function () {
+Before('@api', async function () {
   helpers = new TestHelpers();
   dadosCliente = null;
   resposta = null;
   clienteIdCriado = null;
 });
 
-After(async function () {
+After('@api', async function () {
   // Limpeza: remove cliente criado durante o teste
   if (dadosCliente && dadosCliente.cpf_cnpj) {
     try {
