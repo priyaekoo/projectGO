@@ -12,7 +12,7 @@ Funcionalidade: Login no Sistema
     Quando preencho o email "adm@email.com"
     E preencho a senha "123456"
     E clico no botão entrar
-    Então devo ser redirecionado para "/usuarios"
+    Então devo ser redirecionado para "/dashboard"
 
   @TCID:CT04 @negative
   Cenário: CT04 - Login com senha incorreta
@@ -20,4 +20,4 @@ Funcionalidade: Login no Sistema
     Quando preencho o email "adm@email.com"
     E preencho a senha "senhaErrada"
     E clico no botão entrar
-    Então devo ver a mensagem de erro "Credenciais inválidas"
+    Então devo ver a mensagem de erro "Usuário ou senha inválidos"
