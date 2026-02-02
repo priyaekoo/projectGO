@@ -5,7 +5,9 @@
   "scripts": {
     "test": "mocha tests/**/*.test.js --timeout 30000",
     "test:api": "mocha tests/api/**/*.test.js --timeout 30000",
-    "test:ui": "mocha tests/ui/**/*.test.js --timeout 30000"
+    "test:ui": "mocha tests/ui/**/*.test.js --timeout 30000",
+    "test:bdd": "cucumber-js",
+    "test:bdd:clientes": "cucumber-js --tags @clientes"
   },
   "devDependencies": {
     "selenium-webdriver": "^4.18.0",
@@ -13,6 +15,10 @@
     "chai": "^4.4.1",
     "chai-http": "^4.4.0",
     "chromedriver": "^122.0.0",
-    "geckodriver": "^4.3.0"
+    "geckodriver": "^4.3.0",
+    "@cucumber/cucumber": "^10.3.1",
+    "pg": "^8.11.3",
+    "dotenv": "^16.4.1",
+    "node-fetch": "^2.7.0"
   }
 }
