@@ -20,7 +20,8 @@ module.exports = {
     format: [
       'progress-bar',                          // Barra de progresso no terminal
       'json:reports/cucumber-report.json',     // JSON para Azure DevOps
-      'html:reports/cucumber-report.html'      // HTML para visualização local
+      'html:reports/cucumber-report.html',     // HTML para visualização local
+      'junit:reports/junit-report.xml'         // JUnit XML para Azure Pipelines
     ],
 
     // Configurações de execução

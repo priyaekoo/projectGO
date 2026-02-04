@@ -1,0 +1,102 @@
+# Azure DevOps Pipeline - Testes BDD Selenium
+# Integração automática com Azure Test Plans
+#
+# Requisitos:
+# - Variável de grupo ou variável de pipeline: TEST_PLAN_ID
+# - Service connection configurado (se usar stages de deploy)
+
+trigger:
+  branches:
+    include:
+      - main
+      - develop
+      - selenium-tests
+  paths:
+    include:
+      - frontend/selenium/**
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  nodeVersion: '18.x'
+  workingDirectory: 'frontend/selenium'
+
+stages:
+  - stage: Test
+    displayName: 'Executar Testes BDD'
+    jobs:
+      - job: BDDTests
+        displayName: 'Testes Selenium + Cucumber'
+        steps:
+          # Instalar Node.js
+          - task: NodeTool@0
+            displayName: 'Instalar Node.js $(nodeVersion)'
+            inputs:
+              versionSpec: '$(nodeVersion)'
+
+          # Instalar dependências do backend
+          - script: |
+              cd backend
+              npm install
+            displayName: 'Instalar dependências do Backend'
+
+          # Iniciar backend em background
+          - script: |
+              cd backend
+              start /B node src/server.js
+              timeout /t 5
+            displayName: 'Iniciar Backend (background)'
+
+          # Instalar dependências do frontend
+          - script: |
+              cd frontend
+              npm install
+            displayName: 'Instalar dependências do Frontend'
+
+          # Iniciar frontend em background
+          - script: |
+              cd frontend
+              start /B npm run dev
+              timeout /t 10
+            displayName: 'Iniciar Frontend (background)'
+
+          # Instalar dependências dos testes
+          - script: |
+              cd $(workingDirectory)
+              npm install
+            displayName: 'Instalar dependências dos Testes'
+
+          # Executar testes BDD
+          - script: |
+              cd $(workingDirectory)
+              npx cucumber-js --format junit:reports/junit-report.xml --format json:reports/cucumber-report.json
+            displayName: 'Executar Testes Cucumber'
+            continueOnError: true
+
+          # Publicar resultados dos testes no Azure Test Plans
+          - task: PublishTestResults@2
+            displayName: 'Publicar Resultados no Azure Test Plans'
+            inputs:
+              testResultsFormat: 'JUnit'
+              testResultsFiles: '$(workingDirectory)/reports/junit-report.xml'
+              testRunTitle: 'BDD Tests - $(Build.BuildNumber)'
+              failTaskOnFailedTests: false
+              # Mapeia para Test Plan (opcional - requer configuração)
+              # testPlan: $(TEST_PLAN_ID)
+
+          # Publicar relatório HTML como artefato
+          - task: PublishBuildArtifacts@1
+            displayName: 'Publicar Relatório HTML'
+            inputs:
+              pathToPublish: '$(workingDirectory)/reports'
+              artifactName: 'TestReports'
+            condition: always()
+
+          # Publicar relatório JSON para análise
+          - task: PublishBuildArtifacts@1
+            displayName: 'Publicar Relatório JSON'
+            inputs:
+              pathToPublish: '$(workingDirectory)/reports/cucumber-report.json'
+              artifactName: 'CucumberJSON'
+            condition: always()

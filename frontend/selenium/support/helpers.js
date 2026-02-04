@@ -74,6 +74,15 @@ class TestHelpers {
     await element.click();
   }
 
+  async clickByText(text) {
+    const xpath = `//*[contains(text(),'${text}')]`;
+    const element = await this.driver.wait(
+      until.elementLocated(By.xpath(xpath)),
+      config.timeouts.implicit
+    );
+    await element.click();
+  }
+
   async type(selector, text) {
     const element = await this.waitForElement(selector);
     await element.clear();
