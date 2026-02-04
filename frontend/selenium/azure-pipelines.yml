@@ -41,10 +41,10 @@ stages:
             displayName: 'Instalar dependências do Backend'
 
           # Iniciar backend em background
-          - script: |
+          - powershell: |
               cd backend
-              start /B node src/server.js
-              timeout /t 5
+              Start-Process -NoNewWindow -FilePath "node" -ArgumentList "src/server.js"
+              Start-Sleep -Seconds 5
             displayName: 'Iniciar Backend (background)'
 
           # Instalar dependências do frontend
@@ -54,10 +54,10 @@ stages:
             displayName: 'Instalar dependências do Frontend'
 
           # Iniciar frontend em background
-          - script: |
+          - powershell: |
               cd frontend
-              start /B npm run dev
-              timeout /t 10
+              Start-Process -NoNewWindow -FilePath "npm" -ArgumentList "run","dev"
+              Start-Sleep -Seconds 10
             displayName: 'Iniciar Frontend (background)'
 
           # Instalar dependências dos testes
