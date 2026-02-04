@@ -4,11 +4,15 @@ import "./clientes.css";
 
 import { FiEdit, FiUserX, FiDollarSign } from "react-icons/fi";
 import ExtratoModal from "./ExtratoModal";
+import ClienteForm from "./ClienteForm";
 
 function Clientes() {
   const [clientes, setClientes] = useState([]);
   const [erro, setErro] = useState("");
+  const [sucesso, setSucesso] = useState("");
   const [clienteExtrato, setClienteExtrato] = useState(null);
+  const [modalAberto, setModalAberto] = useState(false);
+  const [clienteEditar, setClienteEditar] = useState(null);
 
   const carregarClientes = async () => {
     try {
@@ -30,13 +34,32 @@ function Clientes() {
     carregarClientes();
   };
 
+  const handleSucesso = () => {
+    setSucesso("Cliente cadastrado com sucesso");
+    carregarClientes();
+    setTimeout(() => setSucesso(""), 3000);
+  };
+
+  const abrirModal = (cliente = null) => {
+    setClienteEditar(cliente);
+    setModalAberto(true);
+  };
+
+  const fecharModal = () => {
+    setModalAberto(false);
+    setClienteEditar(null);
+  };
+
   return (
     <div className="usuarios-container">
       <h1>Clientes</h1>
 
-      <button className="btn-adicionar">+ Novo Cliente</button>
+      <button className="btn-adicionar" onClick={() => abrirModal()}>
+        + Novo Cliente
+      </button>
 
       {erro && <p className="mensagem-erro">{erro}</p>}
+      {sucesso && <p className="mensagem-sucesso">{sucesso}</p>}
 
       {clientes.length === 0 ? (
         <p className="mensagem-vazia">
@@ -69,7 +92,10 @@ function Clientes() {
                   </span>
                 </td>
                 <td className="acoes">
-                  <button className="btn-icon editar">
+                  <button
+                    className="btn-icon editar"
+                    onClick={() => abrirModal(cliente)}
+                  >
                     <FiEdit />
                   </button>
 
@@ -102,6 +128,13 @@ function Clientes() {
           onClose={() => setClienteExtrato(null)}
         />
       )}
+
+      <ClienteForm
+        aberto={modalAberto}
+        onClose={fecharModal}
+        onSucesso={handleSucesso}
+        clienteEditar={clienteEditar}
+      />
     </div>
   );
 }
