@@ -15,8 +15,7 @@ trigger:
     include:
       - frontend/selenium/**
 
-pool:
-  vmImage: 'windows-latest'
+pool: Local
 
 variables:
   nodeVersion: '18.x'
