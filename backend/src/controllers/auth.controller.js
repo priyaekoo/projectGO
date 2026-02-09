@@ -5,10 +5,6 @@ const jwt = require("jsonwebtoken");
 exports.login = async (req, res) => {
   const { usuario, senha } = req.body;
 
-  const result = await pool.query("SELECT * FROM usuarios WHERE email = $1", [
-    usuario,
-  ]);
-
   try {
     const result = await pool.query(
       `SELECT id, nome_completo, email, cpf, senha

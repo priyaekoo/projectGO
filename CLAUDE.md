@@ -111,3 +111,37 @@ Tests are in `frontend/tests/` using Playwright:
 - API tests validate authentication and business logic
 - Fixtures in `frontend/fixtures/` contain test data
 - Tests run against `http://localhost:3000` (backend must be running)
+
+---
+
+## Metodologia de Trabalho - Simulação QA
+
+Este projeto é utilizado para **simulação de ambiente de trabalho real** para prática de QA.
+
+### Papéis
+| Papel | Responsável | Atividades |
+|-------|-------------|------------|
+| **P.O** | Claude | Apresentar histórias de usuário, esclarecer regras de negócio |
+| **Dev** | Claude | Desenvolver funcionalidades, corrigir bugs |
+| **QA** | Usuário | Questionar requisitos, escrever cenários BDD, criar automação |
+
+### Stack de Testes (Java)
+- **Build**: Maven
+- **Framework**: JUnit 5 / TestNG
+- **Automação Web**: Selenium WebDriver
+- **BDD**: Cucumber (Gherkin)
+- **Gestão**: Azure DevOps Test Plans
+
+### Fluxo de Trabalho
+1. P.O apresenta User Story com critérios de aceitação
+2. QA questiona regras de negócio (refinamento)
+3. QA escreve cenários BDD (Gherkin)
+4. QA implementa automação (Selenium + Java)
+5. Claude dá feedback sobre perguntas e cenários
+
+### Progresso Atual
+> **Ver arquivo `MEMORY.md` para status detalhado da sprint/história atual**
+
+### Branches de Teste
+- `feature/selenium-login` - Testes automatizados da tela de Login
+- (outras branches serão criadas conforme avançamos)
