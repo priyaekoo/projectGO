@@ -55,6 +55,15 @@ app.use("/estornos", require("./routes/estornos.routes"));
 app.use("/relatorios", require("./routes/relatorios.routes"));
 
 // =====================
+// CENARIOS FINANCEIROS BTG
+// =====================
+app.use("/transacoes-avancadas", require("./routes/transacoesAvancadas.routes"));
+app.use("/aml", require("./routes/aml.routes"));
+app.use("/investimentos", require("./routes/investimentos.routes"));
+app.use("/ordens", require("./routes/ordens.routes"));
+app.use("/conciliacao", require("./routes/conciliacao.routes"));
+
+// =====================
 // ROTA DE TESTE DO BANCO
 // =====================
 app.get("/db-test", async (req, res) => {

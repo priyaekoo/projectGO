@@ -1,0 +1,232 @@
+.ordens-container {
+  padding: 20px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-x: auto;
+  background: #fff;
+  border-radius: 10px;
+  min-height: 80vh;
+}
+
+.ordens-container h1 {
+  margin-bottom: 20px;
+  color: #1a1a2e;
+}
+
+/* Mercado status */
+.mercado-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+.mercado-aberto {
+  background: #d4edda;
+  border: 1px solid #c3e6cb;
+  color: #155724;
+}
+
+.mercado-fechado {
+  background: #f8d7da;
+  border: 1px solid #f5c6cb;
+  color: #721c24;
+}
+
+.mercado-indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.mercado-indicator.aberto { background: #28a745; }
+.mercado-indicator.fechado { background: #dc3545; }
+
+/* Layout */
+.ordens-content {
+  display: flex;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+.ordens-form-box {
+  flex: 0 0 340px;
+  background: #f9f9f9;
+  padding: 20px;
+  border-radius: 10px;
+  overflow-x: auto;
+}
+
+.ordens-lista {
+  flex: 1;
+  min-width: 300px;
+  overflow-x: auto;
+}
+
+/* Form */
+.ordens-form-box h2 {
+  margin-bottom: 15px;
+  font-size: 16px;
+}
+
+.ordens-form-box .form-group {
+  margin-bottom: 12px;
+}
+
+.ordens-form-box .form-group label {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 13px;
+  color: #555;
+}
+
+.ordens-form-box .form-group select,
+.ordens-form-box .form-group input {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 13px;
+  box-sizing: border-box;
+}
+
+.tipo-selector {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.tipo-selector button {
+  flex: 1;
+  padding: 10px;
+  border: 2px solid #ddd;
+  background: white;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.tipo-selector button.selected-compra {
+  border-color: #27ae60;
+  background: #d4edda;
+  color: #155724;
+}
+
+.tipo-selector button.selected-venda {
+  border-color: #e74c3c;
+  background: #f8d7da;
+  color: #721c24;
+}
+
+/* Ativo selecionado info */
+.ativo-info {
+  background: #e8eaf6;
+  border-radius: 6px;
+  padding: 10px;
+  margin-bottom: 12px;
+  font-size: 13px;
+}
+
+.ativo-info .preco {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1a1a2e;
+}
+
+/* Resumo ordem */
+.ordem-resumo {
+  background: #fff3cd;
+  border: 1px solid #ffc107;
+  border-radius: 6px;
+  padding: 10px;
+  margin-bottom: 12px;
+  font-size: 13px;
+}
+
+.btn-criar-ordem {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+}
+
+.btn-criar-ordem.compra { background: #27ae60; }
+.btn-criar-ordem.venda { background: #e74c3c; }
+
+/* Tabela ordens */
+.ordens-tabela {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.ordens-tabela th,
+.ordens-tabela td {
+  padding: 8px 10px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+  font-size: 13px;
+}
+
+.ordens-tabela th {
+  background: #f5f5f5;
+  font-weight: 600;
+}
+
+.badge-compra { background: #27ae60; color: white; padding: 3px 8px; border-radius: 12px; font-size: 11px; }
+.badge-venda { background: #e74c3c; color: white; padding: 3px 8px; border-radius: 12px; font-size: 11px; }
+
+.badge-pendente { background: #f39c12; color: white; padding: 3px 8px; border-radius: 12px; font-size: 11px; }
+.badge-executada { background: #27ae60; color: white; padding: 3px 8px; border-radius: 12px; font-size: 11px; }
+.badge-cancelada { background: #95a5a6; color: white; padding: 3px 8px; border-radius: 12px; font-size: 11px; }
+.badge-rejeitada { background: #e74c3c; color: white; padding: 3px 8px; border-radius: 12px; font-size: 11px; }
+
+.btn-cancelar-ordem {
+  padding: 4px 8px;
+  background: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 11px;
+}
+
+.btn-executar-ordem {
+  padding: 4px 8px;
+  background: #27ae60;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 11px;
+  margin-left: 5px;
+}
+
+/* Filter */
+.ordens-filtro {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+  align-items: center;
+}
+
+.ordens-filtro select {
+  padding: 6px 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+/* Mensagens */
+.ordens-container .mensagem-sucesso { color: #27ae60; margin-bottom: 10px; }
+.ordens-container .mensagem-erro { color: #e74c3c; margin-bottom: 10px; }

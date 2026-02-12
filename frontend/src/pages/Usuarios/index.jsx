@@ -33,6 +33,7 @@ function Usuarios() {
     email: "",
     cpf: "",
     senha: "",
+    perfil: "operador",
   };
 
   const [formCriar, setFormCriar] = useState(formCriarInicial);
@@ -42,6 +43,7 @@ function Usuarios() {
     nome_completo: "",
     email: "",
     cpf: "",
+    perfil: "operador",
     ativo: true,
     criado_em: "",
   });
@@ -149,6 +151,7 @@ function Usuarios() {
       nome_completo: usuario.nome_completo,
       email: usuario.email,
       cpf: usuario.cpf,
+      perfil: usuario.perfil || "operador",
       ativo: usuario.ativo,
       criado_em: usuario.criado_em,
     });
@@ -179,6 +182,7 @@ function Usuarios() {
         nome_completo: formEditar.nome_completo,
         email: formEditar.email,
         cpf: formEditar.cpf,
+        perfil: formEditar.perfil,
       });
 
       setMensagem("Usuário atualizado com sucesso!");
@@ -251,6 +255,7 @@ function Usuarios() {
             <th>Nome</th>
             <th>Email</th>
             <th>CPF</th>
+            <th>Perfil</th>
             <th>Status</th>
             <th>Ações</th>
           </tr>
@@ -262,6 +267,7 @@ function Usuarios() {
               <td>{u.nome_completo}</td>
               <td>{u.email}</td>
               <td>{formatCpf(u.cpf)}</td>
+              <td>{u.perfil || "operador"}</td>
               <td>
                 <span className={u.ativo ? "status-ativo" : "status-inativo"}>
                   {u.ativo ? "Ativo" : "Inativo"}
@@ -354,6 +360,17 @@ function Usuarios() {
               {errosCriar.cpf && (
                 <small className="erro-campo">{errosCriar.cpf}</small>
               )}
+
+              <select
+                value={formCriar.perfil}
+                onChange={(e) =>
+                  setFormCriar({ ...formCriar, perfil: e.target.value })
+                }
+              >
+                <option value="operador">Operador</option>
+                <option value="analista">Analista</option>
+                <option value="admin">Admin</option>
+              </select>
 
               <div
                 className={`campo-senha ${
@@ -450,6 +467,17 @@ function Usuarios() {
               {errosEditar.cpf && (
                 <small className="erro-campo">{errosEditar.cpf}</small>
               )}
+
+              <select
+                value={formEditar.perfil}
+                onChange={(e) =>
+                  setFormEditar({ ...formEditar, perfil: e.target.value })
+                }
+              >
+                <option value="operador">Operador</option>
+                <option value="analista">Analista</option>
+                <option value="admin">Admin</option>
+              </select>
 
               <input value={formEditar.ativo ? "Ativo" : "Inativo"} disabled />
               <input value={formEditar.criado_em} disabled />

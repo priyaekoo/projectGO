@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../../services/api";
+import { formatarMoeda } from "../../services/formatters";
 import "./depositos.css";
 
 function Depositos() {
@@ -91,7 +92,7 @@ function Depositos() {
           {depositos.map((d) => (
             <tr key={d.id}>
               <td>{d.nome_completo}</td>
-              <td>R$ {Number(d.valor).toFixed(2)}</td>
+              <td>{formatarMoeda(d.valor)}</td>
               <td>{new Date(d.data_movimentacao).toLocaleDateString()}</td>
             </tr>
           ))}

@@ -27,6 +27,7 @@
     padding: 24px 16px;
     display: flex;
     flex-direction: column;
+    overflow-y: auto;
   }
 
   .sidebar h3 {
@@ -164,7 +165,8 @@
    CONTENT VARIANTS
 ================================ */
   .content-wide {
-    padding-left: 24px;
-    padding-right: 24px;
+    padding: 24px;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 }

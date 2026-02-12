@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../../services/api";
+import { formatarMoeda } from "../../services/formatters";
 import { FiRotateCcw } from "react-icons/fi";
 
 function ExtratoModal({ fornecedor, onClose }) {
@@ -63,7 +64,7 @@ function ExtratoModal({ fornecedor, onClose }) {
         {saldo && (
           <div className="saldo-box">
             <span>Saldo Atual</span>
-            <strong>R$ {Number(saldo.saldo_atual).toFixed(2)}</strong>
+            <strong>{formatarMoeda(saldo.saldo_atual)}</strong>
           </div>
         )}
 
@@ -96,8 +97,8 @@ function ExtratoModal({ fornecedor, onClose }) {
                     </td>
                     <td>{mov.origem}</td>
                     <td className={mov.tipo === "ENTRADA" ? "entrada" : "saida"}>
-                      {mov.tipo === "ENTRADA" ? "+" : "-"} R${" "}
-                      {Number(mov.valor).toFixed(2)}
+                      {mov.tipo === "ENTRADA" ? "+" : "-"}{" "}
+                      {formatarMoeda(mov.valor)}
                     </td>
                     <td>
                       {!mov.estornado && mov.origem !== "ESTORNO" && (

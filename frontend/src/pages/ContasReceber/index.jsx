@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../../services/api.js";
+import { formatarMoeda } from "../../services/formatters";
 
 import "../Usuarios/usuarios.css";
 import "./contasReceber.css";
@@ -88,7 +89,7 @@ function ContasReceber() {
             <tr key={c.id}>
               <td>{c.nome_completo}</td>
               <td>{c.descricao}</td>
-              <td>R$ {Number(c.valor).toFixed(2)}</td>
+              <td>{formatarMoeda(c.valor)}</td>
               <td>{c.data_vencimento}</td>
               <td>
                 <span className={`status-${c.status.toLowerCase()}`}>

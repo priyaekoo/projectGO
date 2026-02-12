@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../../services/api";
+import { formatarMoeda } from "../../services/formatters";
 
 import "../Usuarios/usuarios.css";
 import "../ContasReceber/contasReceber.css";
@@ -69,7 +70,7 @@ function ContasPagar() {
       const msg = error?.response?.data?.erro || "Erro ao pagar conta";
       const saldo = error?.response?.data?.saldo_atual;
       if (saldo !== undefined) {
-        setErroPagar(`${msg}. Saldo disponivel: R$ ${Number(saldo).toFixed(2)}`);
+        setErroPagar(`${msg}. Saldo disponivel: ${formatarMoeda(saldo)}`);
       } else {
         setErroPagar(msg);
       }
@@ -123,7 +124,7 @@ function ContasPagar() {
               <td>{c.nome_fornecedor || `Fornecedor #${c.id_fornecedor}`}</td>
               <td>{c.nome_cliente || "-"}</td>
               <td>{c.descricao}</td>
-              <td>R$ {Number(c.valor).toFixed(2)}</td>
+              <td>{formatarMoeda(c.valor)}</td>
               <td>{c.data_vencimento}</td>
               <td>
                 <span className={`status-${c.status.toLowerCase()}`}>
@@ -188,7 +189,7 @@ function ContasPagar() {
               <strong>Fornecedor:</strong> {contaSelecionada.nome_fornecedor}
             </p>
             <p>
-              <strong>Valor:</strong> R$ {Number(contaSelecionada.valor).toFixed(2)}
+              <strong>Valor:</strong> {formatarMoeda(contaSelecionada.valor)}
             </p>
 
             <label style={{ marginTop: "16px", display: "block" }}>

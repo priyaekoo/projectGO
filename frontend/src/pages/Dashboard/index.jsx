@@ -19,7 +19,12 @@ function Dashboard() {
     location.pathname.includes("/contas-receber") ||
     location.pathname.includes("/contas-pagar") ||
     location.pathname.includes("/transferencias") ||
-    location.pathname.includes("/relatorios");
+    location.pathname.includes("/relatorios") ||
+    location.pathname.includes("/transacoes-avancadas") ||
+    location.pathname.includes("/aml") ||
+    location.pathname.includes("/investimentos") ||
+    location.pathname.includes("/ordens") ||
+    location.pathname.includes("/conciliacao");
 
   return (
     <div className="dashboard-container">
@@ -39,6 +44,19 @@ function Dashboard() {
 
         <span className="menu-section">Consultas</span>
         <button onClick={() => navigate("relatorios")}>Relatorios</button>
+
+        <span className="menu-section">Investimentos</span>
+        <button onClick={() => navigate("investimentos")}>Fundos e Carteira</button>
+
+        <span className="menu-section">Mercado</span>
+        <button onClick={() => navigate("ordens")}>Ordens</button>
+        <button onClick={() => navigate("transacoes-avancadas")}>Transacoes Avancadas</button>
+
+        <span className="menu-section">Compliance</span>
+        <button onClick={() => navigate("aml")}>AML / PEP</button>
+
+        <span className="menu-section">Operacoes</span>
+        <button onClick={() => navigate("conciliacao")}>Conciliacao Bancaria</button>
 
         <button className="logout" onClick={logout}>
           Sair

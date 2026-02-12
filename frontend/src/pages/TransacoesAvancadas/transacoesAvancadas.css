@@ -1,0 +1,225 @@
+.transacoes-avancadas-container {
+  padding: 20px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-x: auto;
+  background: #fff;
+  border-radius: 10px;
+  min-height: 80vh;
+}
+
+.transacoes-avancadas-container h1 {
+  margin-bottom: 20px;
+  color: #1a1a2e;
+}
+
+/* Tabs */
+.ta-tabs {
+  display: flex;
+  gap: 0;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.ta-tabs button {
+  padding: 10px 20px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 14px;
+  color: #666;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+}
+
+.ta-tabs button.active {
+  color: #1a1a2e;
+  border-bottom-color: #4361ee;
+  font-weight: 600;
+}
+
+/* Layout */
+.ta-content {
+  display: flex;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+.ta-form-box {
+  flex: 1;
+  min-width: 300px;
+  background: #f9f9f9;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.ta-form-box h2 {
+  margin-bottom: 15px;
+  font-size: 16px;
+}
+
+.ta-form-box .form-group {
+  margin-bottom: 12px;
+}
+
+.ta-form-box .form-group label {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 13px;
+  color: #555;
+}
+
+.ta-form-box .form-group select,
+.ta-form-box .form-group input,
+.ta-form-box .form-group textarea {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 13px;
+  box-sizing: border-box;
+}
+
+.ta-historico {
+  flex: 1;
+  min-width: 300px;
+  overflow-x: auto;
+}
+
+.ta-historico h2 {
+  margin-bottom: 15px;
+  font-size: 16px;
+}
+
+/* Tabela */
+.ta-tabela {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.ta-tabela th,
+.ta-tabela td {
+  padding: 8px 10px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+  font-size: 13px;
+}
+
+.ta-tabela th {
+  background: #f5f5f5;
+  font-weight: 600;
+}
+
+/* Taxa info */
+.taxa-info {
+  background: #fff3cd;
+  border: 1px solid #ffc107;
+  border-radius: 6px;
+  padding: 10px 15px;
+  margin-bottom: 15px;
+  font-size: 13px;
+}
+
+.taxa-info strong {
+  color: #856404;
+}
+
+/* Botoes */
+.btn-transferir-av {
+  padding: 10px 20px;
+  background: #4361ee;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.btn-transferir-av:hover {
+  background: #3a56d4;
+}
+
+/* Lote */
+.lote-item {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 10px;
+}
+
+.lote-item .lote-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.lote-item .lote-header span {
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.btn-remover-lote {
+  padding: 4px 8px;
+  background: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 11px;
+}
+
+.btn-adicionar-lote {
+  padding: 8px 16px;
+  background: #27ae60;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  margin-bottom: 15px;
+}
+
+/* Resultado lote */
+.resultado-lote {
+  margin-top: 15px;
+  padding: 15px;
+  background: #f0f0f0;
+  border-radius: 8px;
+}
+
+.resultado-lote h3 {
+  margin-bottom: 10px;
+}
+
+.resultado-item {
+  padding: 5px 0;
+  font-size: 13px;
+  border-bottom: 1px solid #ddd;
+}
+
+.resultado-item.ok {
+  color: #27ae60;
+}
+
+.resultado-item.erro {
+  color: #e74c3c;
+}
+
+/* Mensagens */
+.transacoes-avancadas-container .mensagem-sucesso {
+  color: #27ae60;
+  margin-bottom: 10px;
+}
+
+.transacoes-avancadas-container .mensagem-erro {
+  color: #e74c3c;
+  margin-bottom: 10px;
+}
+
+.tipo-entrada { color: #27ae60; font-weight: 600; }
+.tipo-saida { color: #e74c3c; font-weight: 600; }

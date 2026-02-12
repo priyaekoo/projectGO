@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../../services/api";
+import { formatarMoeda } from "../../services/formatters";
 import "./transferencias.css";
 
 function Transferencias() {
@@ -67,7 +68,7 @@ function Transferencias() {
       const msg = error?.response?.data?.erro || "Erro ao realizar transferencia";
       const saldo = error?.response?.data?.saldo_atual;
       if (saldo !== undefined) {
-        setErro(`${msg}. Saldo disponivel: R$ ${Number(saldo).toFixed(2)}`);
+        setErro(`${msg}. Saldo disponivel: ${formatarMoeda(saldo)}`);
       } else {
         setErro(msg);
       }
@@ -189,7 +190,7 @@ function Transferencias() {
                         {t.tipo === "ENTRADA" ? "Recebeu" : "Enviou"}
                       </span>
                     </td>
-                    <td>R$ {Number(t.valor).toFixed(2)}</td>
+                    <td>{formatarMoeda(t.valor)}</td>
                     <td>
                       {t.descricao}
                       {t.estornado && " (ESTORNADO)"}

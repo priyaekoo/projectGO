@@ -6,7 +6,7 @@ const { isValidCPF } = require("../utils/validators");
  * Criar usuário
  */
 exports.criar = async (req, res) => {
-  const { nome_completo, email, cpf, senha } = req.body;
+  const { nome_completo, email, cpf, senha, perfil } = req.body;
 
   // Validação básica de CPF
   if (!isValidCPF(cpf)) {
@@ -17,10 +17,10 @@ exports.criar = async (req, res) => {
     const senhaHash = bcrypt.hashSync(senha, 10);
 
     const result = await pool.query(
-      `INSERT INTO usuarios (nome_completo, email, cpf, senha)
-       VALUES ($1, $2, $3, $4)
-       RETURNING id, nome_completo, email, cpf, ativo`,
-      [nome_completo, email, cpf, senhaHash],
+      `INSERT INTO usuarios (nome_completo, email, cpf, senha, perfil)
+       VALUES ($1, $2, $3, $4, $5)
+       RETURNING id, nome_completo, email, cpf, perfil, ativo`,
+      [nome_completo, email, cpf, senhaHash, perfil || 'operador'],
     );
 
     return res.status(201).json(result.rows[0]);
@@ -44,11 +44,12 @@ exports.criar = async (req, res) => {
 exports.consultar = async (req, res) => {
   try {
     const result = await pool.query(`
-      SELECT 
+      SELECT
         id,
         nome_completo,
         email,
         cpf,
+        perfil,
         ativo,
         criado_em
       FROM usuarios
@@ -67,7 +68,7 @@ exports.consultar = async (req, res) => {
  */
 exports.atualizar = async (req, res) => {
   const { id } = req.params;
-  const { nome_completo, email, cpf } = req.body;
+  const { nome_completo, email, cpf, perfil } = req.body;
 
   // Validação de CPF
   if (!isValidCPF(cpf)) {
@@ -79,11 +80,12 @@ exports.atualizar = async (req, res) => {
       `UPDATE usuarios
        SET nome_completo = $1,
            email = $2,
-           cpf = $3
-       WHERE id = $4
+           cpf = $3,
+           perfil = $4
+       WHERE id = $5
          AND ativo = true
-       RETURNING id, nome_completo, email, cpf, ativo, criado_em`,
-      [nome_completo, email, cpf, id],
+       RETURNING id, nome_completo, email, cpf, perfil, ativo, criado_em`,
+      [nome_completo, email, cpf, perfil || 'operador', id],
     );
 
     if (result.rowCount === 0) {
@@ -135,7 +137,7 @@ exports.consultarPorId = async (req, res) => {
 
   try {
     const result = await pool.query(
-      `SELECT id, nome_completo, email, cpf, ativo
+      `SELECT id, nome_completo, email, cpf, perfil, ativo
        FROM usuarios
        WHERE id = $1
          AND ativo = true`,

@@ -10,6 +10,11 @@ import ContasPagar from "../pages/ContasPagar";
 import Depositos from "../pages/Depositos";
 import Transferencias from "../pages/Transferencias";
 import Relatorios from "../pages/Relatorios";
+import TransacoesAvancadas from "../pages/TransacoesAvancadas";
+import AML from "../pages/AML";
+import Investimentos from "../pages/Investimentos";
+import Ordens from "../pages/Ordens";
+import Conciliacao from "../pages/Conciliacao";
 import PrivateRoute from "./PrivateRoute";
 
 function AppRoutes() {
@@ -36,6 +41,11 @@ function AppRoutes() {
           <Route path="contas-pagar" element={<ContasPagar />} />
           <Route path="transferencias" element={<Transferencias />} />
           <Route path="relatorios" element={<Relatorios />} />
+          <Route path="transacoes-avancadas" element={<TransacoesAvancadas />} />
+          <Route path="aml" element={<AML />} />
+          <Route path="investimentos" element={<Investimentos />} />
+          <Route path="ordens" element={<Ordens />} />
+          <Route path="conciliacao" element={<Conciliacao />} />
         </Route>
       </Routes>
     </BrowserRouter>

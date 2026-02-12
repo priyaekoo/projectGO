@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../../services/api";
+import { formatarMoeda } from "../../services/formatters";
 import "./relatorios.css";
 
 function Relatorios() {
@@ -40,7 +41,7 @@ function Relatorios() {
   };
 
   const formatarValor = (valor) => {
-    return `R$ ${Number(valor).toFixed(2)}`;
+    return formatarMoeda(valor);
   };
 
   if (carregando) {

@@ -7,7 +7,7 @@ exports.login = async (req, res) => {
 
   try {
     const result = await pool.query(
-      `SELECT id, nome_completo, email, cpf, senha
+      `SELECT id, nome_completo, email, cpf, senha, perfil
        FROM usuarios
        WHERE email = $1 OR cpf = $1`,
       [usuario]
@@ -29,6 +29,7 @@ exports.login = async (req, res) => {
       {
         id: user.id,
         nome: user.nome_completo,
+        perfil: user.perfil,
       },
       process.env.JWT_SECRET,
       { expiresIn: "8h" }
@@ -40,6 +41,7 @@ exports.login = async (req, res) => {
         id: user.id,
         nome: user.nome_completo,
         email: user.email,
+        perfil: user.perfil,
       },
     });
   } catch (error) {
