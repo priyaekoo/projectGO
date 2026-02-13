@@ -62,8 +62,24 @@ function ContasPagarForm({ aberto, onClose, onSucesso, contaEditar = null }) {
     setForm({ ...form, [name]: value });
   }
 
+  function getHoje() {
+    return new Date().toISOString().split("T")[0];
+  }
+
   async function handleSubmit(e) {
     e.preventDefault();
+
+    // Validar data de vencimento no frontend
+    if (form.data_vencimento < getHoje()) {
+      setErro("Data de vencimento nao pode ser anterior a data atual");
+      return;
+    }
+
+    const anoVenc = new Date(form.data_vencimento).getFullYear();
+    if (anoVenc > 2100) {
+      setErro("Ano de vencimento invalido");
+      return;
+    }
 
     try {
       if (contaEditar) {
@@ -153,6 +169,8 @@ function ContasPagarForm({ aberto, onClose, onSucesso, contaEditar = null }) {
             name="data_vencimento"
             value={form.data_vencimento}
             onChange={handleChange}
+            min={getHoje()}
+            max="2100-12-31"
             required
           />
 

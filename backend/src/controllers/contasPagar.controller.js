@@ -12,6 +12,23 @@ exports.criar = async (req, res) => {
     });
   }
 
+  // Validar data de vencimento
+  const dataVenc = new Date(data_vencimento + "T00:00:00");
+  const hoje = new Date();
+  hoje.setHours(0, 0, 0, 0);
+
+  if (isNaN(dataVenc.getTime())) {
+    return res.status(400).json({ erro: "Data de vencimento invalida" });
+  }
+
+  if (dataVenc < hoje) {
+    return res.status(400).json({ erro: "Data de vencimento nao pode ser anterior a data atual" });
+  }
+
+  if (dataVenc.getFullYear() > 2100) {
+    return res.status(400).json({ erro: "Ano de vencimento invalido" });
+  }
+
   try {
     const valorNumerico = Number(valor);
 
@@ -56,6 +73,73 @@ exports.listar = async (req, res) => {
   } catch (error) {
     return res.status(500).json({
       erro: "Erro ao listar contas a pagar",
+    });
+  }
+};
+
+/**
+ * Atualizar conta a pagar (apenas contas PENDENTES)
+ */
+exports.atualizar = async (req, res) => {
+  const { id } = req.params;
+  const { descricao, valor, data_vencimento } = req.body;
+
+  try {
+    // Verificar se a conta existe e está pendente
+    const contaResult = await pool.query(
+      `SELECT * FROM contas_pagar WHERE id = $1`,
+      [id]
+    );
+
+    if (contaResult.rowCount === 0) {
+      return res.status(404).json({ erro: "Conta nao encontrada" });
+    }
+
+    if (contaResult.rows[0].status !== "PENDENTE") {
+      return res.status(400).json({ erro: "Apenas contas pendentes podem ser editadas" });
+    }
+
+    // Validar data de vencimento
+    if (data_vencimento) {
+      const dataVenc = new Date(data_vencimento + "T00:00:00");
+      const hoje = new Date();
+      hoje.setHours(0, 0, 0, 0);
+
+      if (isNaN(dataVenc.getTime())) {
+        return res.status(400).json({ erro: "Data de vencimento invalida" });
+      }
+
+      if (dataVenc < hoje) {
+        return res.status(400).json({ erro: "Data de vencimento nao pode ser anterior a data atual" });
+      }
+
+      if (dataVenc.getFullYear() > 2100) {
+        return res.status(400).json({ erro: "Ano de vencimento invalido" });
+      }
+    }
+
+    const valorNumerico = valor ? Number(valor) : contaResult.rows[0].valor;
+
+    const result = await pool.query(
+      `
+      UPDATE contas_pagar
+      SET descricao = $1, valor = $2, data_vencimento = $3
+      WHERE id = $4
+      RETURNING *
+      `,
+      [
+        descricao || contaResult.rows[0].descricao,
+        valorNumerico,
+        data_vencimento || contaResult.rows[0].data_vencimento,
+        id,
+      ]
+    );
+
+    return res.json(result.rows[0]);
+  } catch (error) {
+    return res.status(500).json({
+      erro: "Erro ao atualizar conta a pagar",
+      detalhe: error.message,
     });
   }
 };

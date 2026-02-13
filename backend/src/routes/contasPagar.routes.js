@@ -9,6 +9,9 @@ router.post("/", contasPagarController.criar);
 // listar contas a pagar
 router.get("/", contasPagarController.listar);
 
+// atualizar conta (deve vir antes das rotas /:id/pagar e /:id/cancelar)
+router.patch("/:id", contasPagarController.atualizar);
+
 // pagar conta
 router.patch("/:id/pagar", contasPagarController.pagar);
 

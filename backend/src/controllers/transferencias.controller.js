@@ -12,13 +12,20 @@ exports.transferir = async (req, res) => {
     });
   }
 
-  if (id_cliente_origem === id_cliente_destino) {
+  const idOrigem = Number(id_cliente_origem);
+  const idDestino = Number(id_cliente_destino);
+  const valorNumerico = Number(valor);
+
+  if (isNaN(idOrigem) || isNaN(idDestino)) {
+    return res.status(400).json({ erro: "IDs de cliente invalidos" });
+  }
+
+  if (idOrigem === idDestino) {
     return res.status(400).json({
       erro: "Cliente origem e destino devem ser diferentes",
     });
   }
 
-  const valorNumerico = Number(valor);
   if (valorNumerico <= 0) {
     return res.status(400).json({ erro: "Valor deve ser maior que zero" });
   }
@@ -41,7 +48,7 @@ exports.transferir = async (req, res) => {
       WHERE cl.id = $1
       GROUP BY cl.id
       `,
-      [id_cliente_origem]
+      [idOrigem]
     );
 
     if (saldoResult.rowCount === 0) {
@@ -63,7 +70,7 @@ exports.transferir = async (req, res) => {
     // 2. Verificar se cliente destino existe
     const destinoResult = await client.query(
       "SELECT id, nome_completo FROM clientes WHERE id = $1",
-      [id_cliente_destino]
+      [idDestino]
     );
 
     if (destinoResult.rowCount === 0) {
@@ -83,7 +90,7 @@ exports.transferir = async (req, res) => {
       RETURNING id
       `,
       [
-        id_cliente_origem,
+        idOrigem,
         valorNumerico,
         descricao || `Transferencia para ${nomeDestino}`,
       ]
@@ -98,7 +105,7 @@ exports.transferir = async (req, res) => {
       RETURNING id
       `,
       [
-        id_cliente_destino,
+        idDestino,
         valorNumerico,
         descricao || `Transferencia de ${nomeOrigem}`,
       ]
